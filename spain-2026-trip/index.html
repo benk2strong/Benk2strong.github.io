@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spain 2026 Trip Dashboard</title>
+<style>
+  :root{
+    --bg:#faf7f2;
+    --surface:#ffffff;
+    --border:#e7dfd3;
+    --ink:#2b2420;
+    --ink-dim:#71675c;
+    --accent:#c1440e;
+    --accent-soft:#f4e3d8;
+    --gold:#c99a2e;
+    --teal:#3a6b6a;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(43,36,32,.06), 0 8px 24px -12px rgba(43,36,32,.15);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1815;
+      --surface:#26211c;
+      --border:#3a332b;
+      --ink:#f2ece3;
+      --ink-dim:#a89c8c;
+      --accent:#e2712f;
+      --accent-soft:#3a2a1e;
+      --gold:#d9ae4e;
+      --teal:#5b9694;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  header{
+    padding:2.5rem 1.5rem 1.5rem;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+  }
+  header h1{
+    margin:0 0 .25rem;
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    letter-spacing:-.02em;
+  }
+  header p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:.95rem;
+  }
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:2rem 1.5rem 4rem;
+    display:grid;
+    gap:1.25rem;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  }
+  section.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:1.25rem 1.4rem;
+  }
+  section.card.wide{
+    grid-column:1/-1;
+  }
+  section.card h2{
+    margin:0 0 .75rem;
+    font-size:1.05rem;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  section.card h2 .dot{
+    width:.5rem;height:.5rem;border-radius:50%;background:var(--accent);
+    display:inline-block;
+  }
+  .placeholder{
+    color:var(--ink-dim);
+    font-size:.9rem;
+    border:1px dashed var(--border);
+    border-radius:calc(var(--radius) - 6px);
+    padding:.9rem 1rem;
+    background:var(--accent-soft);
+  }
+  ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:.5rem;}
+  ul.plain li{
+    display:flex;justify-content:space-between;gap:1rem;
+    padding:.55rem .7rem;border-radius:8px;background:var(--bg);
+    border:1px solid var(--border);font-size:.9rem;
+  }
+  .badge{
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--teal);font-weight:600;
+  }
+  footer{
+    text-align:center;color:var(--ink-dim);font-size:.8rem;padding:1.5rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇪🇸 Spain 2026</h1>
+  <p>Trip dashboard — itinerary, routing, and planning notes. Work in progress.</p>
+</header>
+
+<main>
+
+  <section class="card wide">
+    <h2><span class="dot"></span>Trip Overview</h2>
+    <div class="placeholder">
+      TODO: dates, travelers, home base city, overall route (e.g. Madrid → Toledo → Sevilla → Granada → Barcelona).
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Itinerary</h2>
+    <ul class="plain">
+      <li><span>Day 1</span><span class="badge">TBD</span></li>
+      <li><span>Day 2</span><span class="badge">TBD</span></li>
+      <li><span>Day 3</span><span class="badge">TBD</span></li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Route &amp; Cities</h2>
+    <div class="placeholder">
+      TODO: map/route plan between cities, travel mode (train/car/flight), leg durations.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Lodging</h2>
+    <div class="placeholder">
+      TODO: hotel/Airbnb per city, check-in/out dates, booking links.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Budget</h2>
+    <div class="placeholder">
+      TODO: flights, lodging, transport, food, activities — estimated vs actual.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="dot"></span>Packing List</h2>
+    <div class="placeholder">
+      TODO: packing checklist.
+    </div>
+  </section>
+
+  <section class="card wide">
+    <h2><span class="dot"></span>Notes &amp; Research</h2>
+    <div class="placeholder">
+      TODO: open questions, things to research (best regions, train passes, seasonal weather, festivals/events during travel dates).
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Last updated: manually, as we go.
+</footer>
+
+</body>
+</html>
