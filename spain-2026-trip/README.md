@@ -1,23 +1,75 @@
-# Spain 2026 Trip Planning
+# Spain 2026 — Trip Dashboard
 
-Planning workspace for an upcoming trip to Spain. `index.html` is the working
-dashboard — a single-file HTML page we'll keep iterating on as itinerary,
-routing, lodging, and budget details firm up.
+`index.html` is a single self-contained file: no build step, no dependencies.
+Open it in a browser, or view it live at
+`https://benk2strong.github.io/spain-2026-trip/`.
 
-## Status
+Built from `Spain_Trip_Itinerary_.xlsx` (Sheet2). Sep 9–27, 2026:
+**Madrid → San Sebastián → Bordeaux → Paris.**
 
-Scaffold only — no trip details filled in yet.
+## Tabs
 
-## Next steps
+- **Overview** — the 19-day spine, the legs, and the open questions.
+- **Schedule** — the spreadsheet's own shape (days across, time of day down),
+  with reservations pulled out and every link clickable. Filterable.
+- **Routes & Map** — pick a day; it plots the located places and solves the
+  visiting order. Includes the 16 Sep fork (Picos de Europa vs Bilbao/Biarritz)
+  as two costed alternatives.
+- **Locked In** — everything with a time attached, in date order.
+- **Places** — the geocoded inventory, plus the links still needing names.
 
-- [ ] Nail down travel dates and number of travelers
-- [ ] Pick home base / overall route (which cities, what order)
-- [ ] Research routing between cities (train vs. car vs. flight, leg times)
-- [ ] Lodging options per stop
-- [ ] Rough budget
-- [ ] Packing list
+## How the routing works
 
-## Viewing the dashboard
+For each day the page builds a distance matrix over that day's located places
+(haversine, inflated by a detour factor: ×1.25 walking, ×1.30 driving), then
+orders them by **cheapest insertion followed by 2-opt**.
 
-Open `index.html` directly in a browser, or view it live via GitHub Pages
-once merged: `https://benk2strong.github.io/spain-2026-trip/`.
+The score being minimised is not pure distance. It is:
+
+```
+km + 0.6·(minutes late + minutes past closing) + 0.12·(minutes of late start) + 0.02·(displacement from your listed order)
+```
+
+Which encodes four rules:
+
+1. **Reservations are pinned.** Any order that reaches a booking after its time
+   is charged heavily, so the solver will happily walk further to make it.
+2. **Opening hours are respected** where known — the Capucins market closing at
+   14:30 and Liria Palace at 19:00 both come straight from your sheet.
+3. **The day shouldn't open at a 3pm reservation.** Waiting *before the first
+   stop* is charged; mid-day gaps are not, because charging those would pay the
+   solver to wander further just to burn the clock.
+4. **Ties go to your order.** When two routes cost the same, the one closer to
+   how you wrote it down wins.
+
+Travel days pin their endpoints (`from`/`to`), so 14 Sep runs
+Madrid → Segovia → Burgos → San Sebastián rather than an unanchored loop,
+and day trips return to where they started.
+
+The panel reports the result against your listed order, so the saving is
+always visible and checkable.
+
+## Known limits
+
+- **Coordinates are hand-entered** from place names, not geocoded. Good enough
+  to order a day; not good enough to navigate by. Places flagged `verify`
+  in the Places tab are the least certain.
+- **65 `maps.app.goo.gl` links are unresolved.** Google's short links are
+  blocked from the environment this was built in, so those places aren't on
+  any map or in any route. They're listed under Places → *Needs a name*.
+- **Travel times are modelled, not live** — straight-line distance with a
+  detour factor and a flat speed. No traffic, no transit schedules.
+
+## Editing
+
+Everything renders from two objects at the top of the script in `index.html`:
+
+- `PLACES` — `id → {n, lat, lng, city, k, d}`, plus optional `o:[open,close]`
+  opening hours and `v:1` to flag a coordinate as unverified.
+- `DAYS` — one entry per date, each with `items[]`. An item is
+  `{b:block, t:"HH:MM", txt, u:url(s), p:place id(s), k:kind}`.
+  `alt:1` marks an either/or. A day may carry `from`/`to` to pin its endpoints,
+  or `variants[]` for a fork like 16 Sep.
+
+Naming an unresolved link is a two-line change: add the place to `PLACES`,
+then put its `p:` on the matching item.

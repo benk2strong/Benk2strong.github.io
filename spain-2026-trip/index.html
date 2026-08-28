@@ -1,177 +1,1508 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spain 2026 Trip Dashboard</title>
+<title>Iberia Line 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-  :root{
-    --bg:#faf7f2;
-    --surface:#ffffff;
-    --border:#e7dfd3;
-    --ink:#2b2420;
-    --ink-dim:#71675c;
-    --accent:#c1440e;
-    --accent-soft:#f4e3d8;
-    --gold:#c99a2e;
-    --teal:#3a6b6a;
-    --radius:14px;
-    --shadow:0 1px 2px rgba(43,36,32,.06), 0 8px 24px -12px rgba(43,36,32,.15);
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#1c1815;
-      --surface:#26211c;
-      --border:#3a332b;
-      --ink:#f2ece3;
-      --ink-dim:#a89c8c;
-      --accent:#e2712f;
-      --accent-soft:#3a2a1e;
-      --gold:#d9ae4e;
-      --teal:#5b9694;
-      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
-    }
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-    line-height:1.5;
-  }
-  header{
-    padding:2.5rem 1.5rem 1.5rem;
-    text-align:center;
-    border-bottom:1px solid var(--border);
-  }
-  header h1{
-    margin:0 0 .25rem;
-    font-size:clamp(1.6rem,4vw,2.4rem);
-    letter-spacing:-.02em;
-  }
-  header p{
-    margin:0;
-    color:var(--ink-dim);
-    font-size:.95rem;
-  }
-  main{
-    max-width:1080px;
-    margin:0 auto;
-    padding:2rem 1.5rem 4rem;
-    display:grid;
-    gap:1.25rem;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  }
-  section.card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:1.25rem 1.4rem;
-  }
-  section.card.wide{
-    grid-column:1/-1;
-  }
-  section.card h2{
-    margin:0 0 .75rem;
-    font-size:1.05rem;
-    display:flex;
-    align-items:center;
-    gap:.5rem;
-  }
-  section.card h2 .dot{
-    width:.5rem;height:.5rem;border-radius:50%;background:var(--accent);
-    display:inline-block;
-  }
-  .placeholder{
-    color:var(--ink-dim);
-    font-size:.9rem;
-    border:1px dashed var(--border);
-    border-radius:calc(var(--radius) - 6px);
-    padding:.9rem 1rem;
-    background:var(--accent-soft);
-  }
-  ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:.5rem;}
-  ul.plain li{
-    display:flex;justify-content:space-between;gap:1rem;
-    padding:.55rem .7rem;border-radius:8px;background:var(--bg);
-    border:1px solid var(--border);font-size:.9rem;
-  }
-  .badge{
-    font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;
-    color:var(--teal);font-weight:600;
-  }
-  footer{
-    text-align:center;color:var(--ink-dim);font-size:.8rem;padding:1.5rem;
-  }
-</style>
-</head>
-<body>
+:root{
+  --ground:#f2f4f6;
+  --surface:#ffffff;
+  --surface-2:#e9edf1;
+  --ink:#141a21;
+  --ink-mid:#3d4954;
+  --ink-dim:#6b7885;
+  --border:#d9dfe6;
+  --border-strong:#b9c3ce;
 
-<header>
-  <h1>🇪🇸 Spain 2026</h1>
-  <p>Trip dashboard — itinerary, routing, and planning notes. Work in progress.</p>
+  --madrid:#d4453b;
+  --sansebastian:#1b7f9e;
+  --bordeaux:#7b3f6b;
+  --paris:#3f5aa6;
+  --transit:#8a7a2e;
+  --nyc:#4a5560;
+
+  --accent:#1b7f9e;
+  --accent-ink:#ffffff;
+  --locked:#b4531c;
+  --warn:#a8341f;
+  --ok:#2f6d4f;
+
+  --shadow-sm:0 1px 2px rgba(20,26,33,.07);
+  --shadow:0 1px 2px rgba(20,26,33,.06), 0 10px 24px -14px rgba(20,26,33,.24);
+  --r:10px;
+
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --cond:"Barlow Condensed","Barlow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161b;
+    --surface:#1a2027;
+    --surface-2:#222a33;
+    --ink:#e6ebf0;
+    --ink-mid:#b3bdc8;
+    --ink-dim:#8695a3;
+    --border:#2e3843;
+    --border-strong:#43505e;
+
+    --madrid:#f0685c;
+    --sansebastian:#43abcb;
+    --bordeaux:#c98ab4;
+    --paris:#7d94dd;
+    --transit:#c4ae4b;
+    --nyc:#8c99a6;
+
+    --accent:#43abcb;
+    --accent-ink:#0d1216;
+    --locked:#e2884a;
+    --warn:#ef7a63;
+    --ok:#5fb389;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 24px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161b;
+  --surface:#1a2027;
+  --surface-2:#222a33;
+  --ink:#e6ebf0;
+  --ink-mid:#b3bdc8;
+  --ink-dim:#8695a3;
+  --border:#2e3843;
+  --border-strong:#43505e;
+  --madrid:#f0685c;
+  --sansebastian:#43abcb;
+  --bordeaux:#c98ab4;
+  --paris:#7d94dd;
+  --transit:#c4ae4b;
+  --nyc:#8c99a6;
+  --accent:#43abcb;
+  --accent-ink:#0d1216;
+  --locked:#e2884a;
+  --warn:#ef7a63;
+  --ok:#5fb389;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 24px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:15px;
+  line-height:1.5;
+}
+h1,h2,h3,h4{font-family:var(--cond);font-weight:700;line-height:1.1;text-wrap:balance;margin:0;letter-spacing:.005em;}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px;}
+a:hover{text-decoration-thickness:2px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+button{font:inherit;color:inherit;}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:1280px;margin:0 auto;padding:.85rem 1.25rem .1rem;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem 1rem;
+}
+.brand{display:flex;align-items:baseline;gap:.6rem;}
+.brand h1{
+  font-size:1.35rem;text-transform:uppercase;letter-spacing:.06em;
+}
+.brand .sub{
+  font-family:var(--mono);font-size:.68rem;color:var(--ink-dim);
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.topbar .spacer{flex:1 1 auto;}
+.themetog{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:999px;padding:.28rem .7rem;cursor:pointer;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-mid);
+}
+.themetog:hover{border-color:var(--border-strong);color:var(--ink);}
+
+.tabs{
+  max-width:1280px;margin:0 auto;padding:0 1.25rem;
+  display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:thin;
+}
+.tab{
+  appearance:none;background:none;border:0;
+  border-bottom:2px solid transparent;
+  padding:.6rem .8rem .55rem;cursor:pointer;white-space:nowrap;
+  font-family:var(--cond);font-size:1rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;
+  color:var(--ink-dim);
+}
+.tab:hover{color:var(--ink);}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);}
+.tab .cnt{
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-dim);
+  margin-left:.35rem;vertical-align:.15em;
+}
+
+main{max-width:1280px;margin:0 auto;padding:1.5rem 1.25rem 5rem;}
+.panel[hidden]{display:none!important;}
+.lede{color:var(--ink-mid);max-width:66ch;margin:0 0 1.25rem;}
+
+/* ---------- generic card ---------- */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);box-shadow:var(--shadow-sm);
+}
+.card-h{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding:.8rem 1rem;border-bottom:1px solid var(--border);
+}
+.card-h h2,.card-h h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:.05em;}
+.card-b{padding:1rem;}
+.eyebrow{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-dim);
+}
+.grid{display:grid;gap:1rem;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));}
+
+/* ---------- stat ---------- */
+.stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:.85rem 1rem;
+  display:flex;flex-direction:column;gap:.15rem;
+}
+.stat .v{font-family:var(--cond);font-size:2rem;font-weight:700;line-height:1;
+  font-variant-numeric:tabular-nums;}
+.stat .k{font-family:var(--mono);font-size:.65rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-dim);}
+.stat .n{font-size:.8rem;color:var(--ink-mid);}
+
+/* ---------- city colour system ---------- */
+.c-madrid{--city:var(--madrid);}
+.c-sansebastian{--city:var(--sansebastian);}
+.c-bordeaux{--city:var(--bordeaux);}
+.c-paris{--city:var(--paris);}
+.c-transit{--city:var(--transit);}
+.c-nyc{--city:var(--nyc);}
+.citydot{width:.6rem;height:.6rem;border-radius:50%;background:var(--city,var(--ink-dim));
+  display:inline-block;flex:none;}
+
+/* ---------- trip spine ---------- */
+.spine{display:flex;gap:2px;overflow-x:auto;padding:.15rem 0 .5rem;}
+.spine-day{
+  flex:1 1 0;min-width:46px;text-decoration:none;color:inherit;
+  border:1px solid var(--border);border-radius:6px;background:var(--surface);
+  padding:.4rem .3rem .45rem;text-align:center;cursor:pointer;
+  border-top:3px solid var(--city,var(--ink-dim));
+  display:flex;flex-direction:column;gap:.1rem;
+}
+.spine-day:hover{border-color:var(--border-strong);}
+.spine-day .dw{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-dim);}
+.spine-day .dd{font-family:var(--cond);font-size:1.05rem;font-weight:700;line-height:1;}
+.spine-day .dc{font-size:.6rem;color:var(--ink-mid);line-height:1.15;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.spine-day .dn{font-family:var(--mono);font-size:.55rem;color:var(--city);font-weight:600;}
+.spine-day.empty{opacity:.55;}
+
+/* ---------- legs ---------- */
+.leg{display:flex;gap:.8rem;align-items:flex-start;padding:.7rem 0;
+  border-bottom:1px dashed var(--border);}
+.leg:last-child{border-bottom:0;}
+.leg .rail{display:flex;flex-direction:column;align-items:center;padding-top:.25rem;}
+.leg .rail i{width:.7rem;height:.7rem;border-radius:50%;background:var(--city);
+  border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--city);}
+.leg .rail b{flex:1;width:2px;background:var(--border-strong);margin-top:.25rem;min-height:1.1rem;}
+.leg:last-child .rail b{display:none;}
+.leg .body{flex:1;min-width:0;}
+.leg .body h4{font-size:1.02rem;}
+.leg .body .meta{font-family:var(--mono);font-size:.68rem;color:var(--ink-dim);
+  letter-spacing:.04em;text-transform:uppercase;}
+.leg .body p{margin:.2rem 0 0;font-size:.88rem;color:var(--ink-mid);}
+
+/* ---------- chips / pills ---------- */
+.chiprow{display:flex;flex-wrap:wrap;gap:.35rem;}
+.chip{
+  display:inline-flex;align-items:center;gap:.35rem;
+  border:1px solid var(--border);border-radius:999px;
+  padding:.2rem .6rem;font-size:.75rem;background:var(--surface);
+  color:var(--ink-mid);white-space:nowrap;
+}
+.chip.lock{border-color:var(--locked);color:var(--locked);font-family:var(--mono);
+  font-size:.68rem;letter-spacing:.03em;}
+.chip.kind{font-family:var(--mono);font-size:.63rem;letter-spacing:.06em;
+  text-transform:uppercase;}
+.tag-food{color:var(--locked);}
+.tag-sight{color:var(--accent);}
+.tag-transit{color:var(--transit);}
+.tag-nature{color:var(--ok);}
+
+/* ---------- schedule grid ---------- */
+.schedwrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r);
+  background:var(--surface);}
+table.sched{border-collapse:separate;border-spacing:0;min-width:1500px;width:100%;}
+table.sched th,table.sched td{
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  vertical-align:top;padding:.5rem .55rem;
+}
+table.sched thead th{
+  position:sticky;top:0;z-index:3;background:var(--surface-2);
+  border-bottom:2px solid var(--city,var(--border-strong));
+  text-align:left;min-width:170px;
+}
+table.sched thead th .dh{display:flex;flex-direction:column;gap:.1rem;}
+table.sched thead th .dw{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-dim);}
+table.sched thead th .dd{font-family:var(--cond);font-size:1.15rem;font-weight:700;line-height:1;}
+table.sched thead th .dc{font-family:var(--cond);font-size:.85rem;font-weight:600;
+  color:var(--city);text-transform:uppercase;letter-spacing:.03em;}
+table.sched th.rowh{
+  position:sticky;left:0;z-index:2;background:var(--surface-2);
+  min-width:92px;width:92px;text-align:left;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-dim);font-weight:500;
+  border-right:2px solid var(--border-strong);
+}
+table.sched thead th.corner{position:sticky;left:0;z-index:4;min-width:92px;width:92px;}
+table.sched td{font-size:.78rem;line-height:1.35;background:var(--surface);}
+table.sched td.empty{background:repeating-linear-gradient(135deg,
+  transparent 0 6px, var(--surface-2) 6px 7px);}
+.sitem{margin:0 0 .3rem;padding-left:.55rem;border-left:2px solid var(--border-strong);}
+.sitem:last-child{margin-bottom:0;}
+.sitem.is-lock{border-left-color:var(--locked);}
+.sitem.is-transit{border-left-color:var(--transit);}
+.sitem .tm{font-family:var(--mono);font-size:.65rem;color:var(--locked);font-weight:600;
+  display:block;letter-spacing:.03em;}
+.sitem a{word-break:break-word;}
+.sitem .lnk{font-family:var(--mono);font-size:.65rem;}
+.notecell{font-style:italic;color:var(--ink-mid);}
+
+/* ---------- routes tab ---------- */
+.daypick{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;}
+.daybtn{
+  appearance:none;cursor:pointer;background:var(--surface);
+  border:1px solid var(--border);border-top:3px solid var(--city,var(--ink-dim));
+  border-radius:7px;padding:.35rem .55rem .4rem;text-align:left;min-width:74px;
+  display:flex;flex-direction:column;gap:.05rem;
+}
+.daybtn:hover{border-color:var(--border-strong);}
+.daybtn[aria-pressed="true"]{
+  background:var(--surface-2);border-color:var(--border-strong);
+  box-shadow:inset 0 0 0 1px var(--border-strong);
+}
+.daybtn .dw{font-family:var(--mono);font-size:.56rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-dim);}
+.daybtn .dd{font-family:var(--cond);font-size:1rem;font-weight:700;line-height:1;}
+.daybtn .dn{font-family:var(--mono);font-size:.55rem;color:var(--city);font-weight:600;}
+.daybtn:disabled{opacity:.42;cursor:not-allowed;}
+
+.routelayout{display:grid;gap:1rem;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);}
+@media (max-width:900px){.routelayout{grid-template-columns:1fr;}}
+
+.mapbox{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;}
+.mapbox svg{display:block;width:100%;height:auto;background:var(--surface);}
+.maphint{padding:.5rem .8rem;border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:.63rem;color:var(--ink-dim);
+  letter-spacing:.04em;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+
+.mp-grat{stroke:var(--border);stroke-width:.5;opacity:.55;}
+.mp-route{fill:none;stroke:var(--city,var(--accent));stroke-width:2.2;
+  stroke-linejoin:round;stroke-linecap:round;opacity:.75;}
+.mp-route.ghost{stroke:var(--ink-dim);stroke-width:1.4;opacity:.35;
+  stroke-dasharray:5 4;}
+.mp-pin{fill:var(--surface);stroke:var(--city,var(--accent));stroke-width:2;cursor:pointer;}
+.mp-pin.lock{fill:var(--locked);stroke:var(--locked);}
+.mp-num{font-family:var(--mono);font-size:9px;font-weight:600;fill:var(--ink);
+  text-anchor:middle;dominant-baseline:central;pointer-events:none;}
+.mp-pin.lock + .mp-num{fill:#fff;}
+.mp-lbl{font-family:var(--body);font-size:9.5px;fill:var(--ink-mid);pointer-events:none;}
+.mp-lbl-bg{fill:var(--surface);opacity:.82;}
+.mp-g.hot .mp-pin{stroke-width:3.5;}
+.mp-g.hot .mp-lbl{fill:var(--ink);font-weight:600;}
+.mp-scale{stroke:var(--ink-dim);stroke-width:1.5;}
+.mp-scale-t{font-family:var(--mono);font-size:8.5px;fill:var(--ink-dim);}
+
+/* itinerary list */
+.itin{display:flex;flex-direction:column;}
+.stop{
+  display:grid;grid-template-columns:auto auto 1fr;gap:.55rem;
+  padding:.5rem .35rem;border-bottom:1px solid var(--border);cursor:default;
+  border-radius:6px;
+}
+.stop:last-child{border-bottom:0;}
+.stop:hover,.stop.hot{background:var(--surface-2);}
+.stop .num{
+  width:1.4rem;height:1.4rem;border-radius:50%;flex:none;
+  border:2px solid var(--city,var(--accent));
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:.68rem;font-weight:600;
+}
+.stop.locked .num{background:var(--locked);border-color:var(--locked);color:#fff;}
+.stop .when{font-family:var(--mono);font-size:.72rem;color:var(--ink-mid);
+  white-space:nowrap;padding-top:.15rem;font-variant-numeric:tabular-nums;}
+.stop .what{min-width:0;}
+.stop .what b{font-weight:600;font-size:.9rem;}
+.stop .what .sub{font-size:.75rem;color:var(--ink-dim);}
+.hop{
+  display:flex;align-items:center;gap:.4rem;padding:.1rem 0 .1rem 2rem;
+  font-family:var(--mono);font-size:.65rem;color:var(--ink-dim);
+}
+.hop .dash{flex:1;height:1px;background:var(--border);}
+
+.mathrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:.5rem;}
+.mathcell{background:var(--surface-2);border-radius:7px;padding:.5rem .6rem;}
+.mathcell .v{display:block;font-family:var(--cond);font-size:1.25rem;font-weight:700;
+  line-height:1.05;font-variant-numeric:tabular-nums;}
+.mathcell .k{display:block;margin-top:.15rem;font-family:var(--mono);font-size:.56rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);}
+.saving{color:var(--ok);font-weight:600;}
+.alert{
+  border-left:3px solid var(--warn);background:var(--surface-2);
+  padding:.5rem .7rem;border-radius:0 6px 6px 0;font-size:.8rem;color:var(--ink-mid);
+  margin-top:.6rem;
+}
+.alert b{color:var(--warn);}
+.variant{display:flex;gap:.3rem;margin-bottom:.8rem;flex-wrap:wrap;}
+.vbtn{
+  appearance:none;cursor:pointer;background:var(--surface);border:1px solid var(--border);
+  border-radius:999px;padding:.28rem .75rem;font-family:var(--cond);font-weight:600;
+  font-size:.9rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);
+}
+.vbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
+  color:var(--accent-ink);}
+
+/* ---------- bookings / places ---------- */
+.bk{display:flex;gap:.7rem;padding:.65rem 0;border-bottom:1px solid var(--border);
+  align-items:flex-start;}
+.bk:last-child{border-bottom:0;}
+.bk .bkd{
+  font-family:var(--mono);font-size:.66rem;text-align:center;flex:none;width:3.1rem;
+  border-right:2px solid var(--city,var(--border-strong));padding-right:.5rem;
+  color:var(--ink-dim);letter-spacing:.03em;
+}
+.bk .bkd b{display:block;font-family:var(--cond);font-size:1.25rem;color:var(--ink);
+  line-height:1;font-weight:700;}
+.bk .bkt{font-family:var(--mono);font-size:.8rem;color:var(--locked);font-weight:600;
+  flex:none;width:4.4rem;padding-top:.1rem;}
+.bk .bkb{min-width:0;flex:1;}
+.bk .bkb b{font-size:.92rem;}
+.bk .bkb .sub{font-size:.78rem;color:var(--ink-dim);}
+
+.plc{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;
+  padding:.45rem .3rem;border-bottom:1px solid var(--border);}
+.plc:last-child{border-bottom:0;}
+.plc .co{font-family:var(--mono);font-size:.66rem;color:var(--ink-dim);white-space:nowrap;}
+.plc .nm{min-width:0;}
+.plc .nm b{font-size:.88rem;font-weight:600;}
+.plc .nm .sub{font-size:.74rem;color:var(--ink-dim);}
+.todo{border-left:3px solid var(--transit);padding-left:.6rem;}
+
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-bottom:.9rem;}
+.filters label{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-dim);}
+.filters input[type=search]{
+  font:inherit;font-size:.85rem;padding:.35rem .6rem;border-radius:7px;
+  border:1px solid var(--border);background:var(--surface);color:var(--ink);min-width:190px;
+}
+footer.foot{
+  max-width:1280px;margin:0 auto;padding:1.5rem 1.25rem 3rem;
+  border-top:1px solid var(--border);color:var(--ink-dim);font-size:.78rem;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>Iberia Line</h1>
+      <span class="sub" id="brandsub">Sep 9 – 27, 2026 &middot; Madrid / San Sebastián / Bordeaux / Paris</span>
+    </div>
+    <span class="spacer"></span>
+    <button class="themetog" id="themetog" type="button">Theme</button>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Dashboard sections">
+    <button class="tab" role="tab" id="tab-overview"  aria-controls="p-overview"  aria-selected="true">Overview</button>
+    <button class="tab" role="tab" id="tab-schedule"  aria-controls="p-schedule"  aria-selected="false">Schedule</button>
+    <button class="tab" role="tab" id="tab-routes"    aria-controls="p-routes"    aria-selected="false">Routes &amp; Map</button>
+    <button class="tab" role="tab" id="tab-bookings"  aria-controls="p-bookings"  aria-selected="false">Locked In<span class="cnt" id="cnt-bk"></span></button>
+    <button class="tab" role="tab" id="tab-places"    aria-controls="p-places"    aria-selected="false">Places<span class="cnt" id="cnt-pl"></span></button>
+  </nav>
 </header>
 
 <main>
+  <!-- ============ OVERVIEW ============ -->
+  <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
+    <p class="lede">Everything from the planning sheet, reorganised. Nineteen days, four home bases,
+      two countries and one unresolved fork on 16 Sep. Click any day in the spine to jump to its route.</p>
 
-  <section class="card wide">
-    <h2><span class="dot"></span>Trip Overview</h2>
-    <div class="placeholder">
-      TODO: dates, travelers, home base city, overall route (e.g. Madrid → Toledo → Sevilla → Granada → Barcelona).
+    <div class="grid g4" style="margin-bottom:1.25rem;">
+      <div class="stat"><span class="v" id="s-days">–</span><span class="k">Days on the ground</span><span class="n" id="s-days-n"></span></div>
+      <div class="stat"><span class="v" id="s-planned">–</span><span class="k">Days planned</span><span class="n" id="s-planned-n"></span></div>
+      <div class="stat"><span class="v" id="s-locked">–</span><span class="k">Fixed commitments</span><span class="n">Flights, reservations, check-outs</span></div>
+      <div class="stat"><span class="v" id="s-places">–</span><span class="k">Places mapped</span><span class="n" id="s-places-n"></span></div>
+    </div>
+
+    <h3 class="eyebrow" style="margin-bottom:.4rem;">The spine &mdash; 19 days</h3>
+    <div class="spine" id="spine"></div>
+
+    <div class="grid g2" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-h"><h2>Legs</h2><span class="eyebrow">How you move</span></div>
+        <div class="card-b" id="legs"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h2>Open questions</h2><span class="eyebrow">Needs a decision</span></div>
+        <div class="card-b" id="gaps"></div>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2><span class="dot"></span>Itinerary</h2>
-    <ul class="plain">
-      <li><span>Day 1</span><span class="badge">TBD</span></li>
-      <li><span>Day 2</span><span class="badge">TBD</span></li>
-      <li><span>Day 3</span><span class="badge">TBD</span></li>
-    </ul>
+  <!-- ============ SCHEDULE ============ -->
+  <section class="panel" id="p-schedule" role="tabpanel" aria-labelledby="tab-schedule" hidden>
+    <p class="lede">Your spreadsheet's shape, kept on purpose &mdash; days across, time of day down &mdash;
+      but with reservations pulled out in colour and every link made clickable.
+      Scroll sideways for the back half of the trip.</p>
+    <div class="filters">
+      <label for="schq">Filter</label>
+      <input type="search" id="schq" placeholder="e.g. pintxos, palace, train" autocomplete="off">
+      <button class="vbtn" id="schlock" type="button" aria-pressed="false">Fixed times only</button>
+      <span class="eyebrow" id="schcount"></span>
+    </div>
+    <div class="schedwrap"><table class="sched" id="schedtable"></table></div>
   </section>
 
-  <section class="card">
-    <h2><span class="dot"></span>Route &amp; Cities</h2>
-    <div class="placeholder">
-      TODO: map/route plan between cities, travel mode (train/car/flight), leg durations.
+  <!-- ============ ROUTES ============ -->
+  <section class="panel" id="p-routes" role="tabpanel" aria-labelledby="tab-routes" hidden>
+    <p class="lede">Pick a day. The map plots every place that day whose location is known, then solves the
+      order that minimises time on your feet &mdash; while holding every reservation at its booked hour.</p>
+    <div class="daypick" id="daypick"></div>
+    <div id="routebody"></div>
+  </section>
+
+  <!-- ============ BOOKINGS ============ -->
+  <section class="panel" id="p-bookings" role="tabpanel" aria-labelledby="tab-bookings" hidden>
+    <p class="lede">The hard edges of the trip &mdash; the things with a time attached that everything
+      else has to fit around.</p>
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-h"><h2>Fixed commitments</h2><span class="eyebrow">In date order</span></div>
+        <div class="card-b" id="bklist"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h2>Who&rsquo;s where</h2><span class="eyebrow">Party movements</span></div>
+        <div class="card-b" id="people"></div>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2><span class="dot"></span>Lodging</h2>
-    <div class="placeholder">
-      TODO: hotel/Airbnb per city, check-in/out dates, booking links.
+  <!-- ============ PLACES ============ -->
+  <section class="panel" id="p-places" role="tabpanel" aria-labelledby="tab-places" hidden>
+    <p class="lede">Every place and link from the sheet. Named spots carry coordinates and feed the routing;
+      bare Google Maps links couldn&rsquo;t be resolved from here, so they&rsquo;re parked below for you to name.</p>
+    <div class="filters">
+      <label for="plq">Filter</label>
+      <input type="search" id="plq" placeholder="Search places" autocomplete="off">
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="card-h"><h2>Mapped</h2><span class="eyebrow" id="plc-mapped"></span></div>
+        <div class="card-b" id="pllist"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><h2>Needs a name</h2><span class="eyebrow" id="plc-todo"></span></div>
+        <div class="card-b">
+          <p style="margin:0 0 .7rem;font-size:.82rem;color:var(--ink-mid);">
+            These are <code>maps.app.goo.gl</code> short links from the sheet. Open one, tell me what it is,
+            and I&rsquo;ll fold it into the routing.</p>
+          <div id="todolist"></div>
+        </div>
+      </div>
     </div>
   </section>
-
-  <section class="card">
-    <h2><span class="dot"></span>Budget</h2>
-    <div class="placeholder">
-      TODO: flights, lodging, transport, food, activities — estimated vs actual.
-    </div>
-  </section>
-
-  <section class="card">
-    <h2><span class="dot"></span>Packing List</h2>
-    <div class="placeholder">
-      TODO: packing checklist.
-    </div>
-  </section>
-
-  <section class="card wide">
-    <h2><span class="dot"></span>Notes &amp; Research</h2>
-    <div class="placeholder">
-      TODO: open questions, things to research (best regions, train passes, seasonal weather, festivals/events during travel dates).
-    </div>
-  </section>
-
 </main>
 
-<footer>
-  Last updated: manually, as we go.
+<footer class="foot">
+  <strong>First draft.</strong> Coordinates for named places are approximate, entered by hand &mdash; good enough to
+  order a day, not to navigate by. Travel times are straight-line distance with a detour factor, not live routing.
+  Everything lives in the <code>TRIP</code> object at the top of this file&rsquo;s script, built to be edited.
 </footer>
 
-</body>
-</html>
+<script>
+/* ============================================================================
+   TRIP DATA  —  transcribed from Spain_Trip_Itinerary_.xlsx (Sheet2)
+   Edit freely: everything the dashboard renders comes from PLACES + DAYS.
+
+   PLACES:  id -> { n:name, lat, lng, city, k:kind, d:dwell minutes, v:verify? }
+            kinds: food | sight | nature | area | transit | bar | shop
+   DAYS:    { date, dow, city, cls, base, note, items:[ ... ] }
+   item:    { b:block, t:"HH:MM" fixed time, txt, u:url(s), p:place id(s), k:kind }
+            b: morning | noon | afternoon | evening | night
+============================================================================ */
+const PLACES = {
+  /* ---- Madrid ---- */
+  mercado_san_anton:{n:"Mercado de San Antón",       lat:40.4224,lng:-3.6972,city:"Madrid",k:"food",  d:60},
+  mercado_paz:      {n:"Mercado de la Paz (Casa Dani)",lat:40.4270,lng:-3.6817,city:"Madrid",k:"food", d:60},
+  chueca:           {n:"Chueca",                      lat:40.4225,lng:-3.6980,city:"Madrid",k:"area",  d:45},
+  cibeles:          {n:"Palacio de Cibeles + rooftop",lat:40.4190,lng:-3.6923,city:"Madrid",k:"sight", d:60},
+  granvia:          {n:"Gran Vía",                    lat:40.4200,lng:-3.7048,city:"Madrid",k:"area",  d:30},
+  liria:            {n:"Palacio de Liria",            lat:40.4272,lng:-3.7110,city:"Madrid",k:"sight", d:75},
+  oeste:            {n:"Parque del Oeste",            lat:40.4297,lng:-3.7215,city:"Madrid",k:"nature",d:50},
+  retiro:           {n:"Parque del Buen Retiro",      lat:40.4153,lng:-3.6845,city:"Madrid",k:"nature",d:60},
+  casa_julian:      {n:"Casa Julián",                 lat:40.4128,lng:-3.7092,city:"Madrid",k:"food",  d:90,v:1},
+  calle_mayor:      {n:"Calle Mayor",                 lat:40.4155,lng:-3.7080,city:"Madrid",k:"area",  d:25},
+  almudena:         {n:"Catedral de la Almudena",     lat:40.4158,lng:-3.7144,city:"Madrid",k:"sight", d:40},
+  royal_palace:     {n:"Palacio Real",                lat:40.4180,lng:-3.7143,city:"Madrid",k:"sight", d:90},
+  sabatini:         {n:"Jardines de Sabatini",        lat:40.4200,lng:-3.7135,city:"Madrid",k:"nature",d:30},
+  carboneras:       {n:"Nun cookies — Corpus Christi",lat:40.4142,lng:-3.7093,city:"Madrid",k:"food",  d:20,v:1},
+  mad_airport:      {n:"Madrid–Barajas",              lat:40.4936,lng:-3.5668,city:"Madrid",k:"transit",d:0},
+  segovia:          {n:"Segovia",                     lat:40.9481,lng:-4.1184,city:"Route", k:"sight", d:150},
+  burgos:           {n:"Burgos",                      lat:42.3439,lng:-3.6969,city:"Route", k:"area",  d:45},
+
+  /* ---- San Sebastián ---- */
+  parte_vieja:      {n:"Parte Vieja",                 lat:43.3235,lng:-1.9845,city:"San Sebastián",k:"area", d:45},
+  ganbara:          {n:"Ganbara",                     lat:43.3229,lng:-1.9856,city:"San Sebastián",k:"food", d:45},
+  gros:             {n:"Gros",                        lat:43.3232,lng:-1.9765,city:"San Sebastián",k:"area", d:45},
+  concha:           {n:"Playa de la Concha",          lat:43.3170,lng:-1.9880,city:"San Sebastián",k:"nature",d:60},
+  ondarreta:        {n:"Playa de Ondarreta",          lat:43.3148,lng:-1.9995,city:"San Sebastián",k:"nature",d:60},
+  igueldo:          {n:"Monte Igueldo",               lat:43.3078,lng:-2.0105,city:"San Sebastián",k:"sight",d:60},
+  amara:            {n:"Amara — Euskotren",           lat:43.3128,lng:-1.9787,city:"San Sebastián",k:"transit",d:0},
+
+  /* ---- day trips from San Sebastián ---- */
+  fuente_de:        {n:"Teleférico de Fuente Dé",     lat:43.1470,lng:-4.8120,city:"Picos",k:"nature",d:150},
+  potes:            {n:"Potes",                       lat:43.1540,lng:-4.6230,city:"Picos",k:"area",  d:60},
+  santander:        {n:"Santander",                   lat:43.4623,lng:-3.8100,city:"Picos",k:"area",  d:90},
+  bilbao:           {n:"Bilbao",                      lat:43.2630,lng:-2.9350,city:"Basque",k:"area", d:120},
+  guggenheim:       {n:"Guggenheim Bilbao",           lat:43.2687,lng:-2.9340,city:"Basque",k:"sight",d:120},
+  biarritz:         {n:"Biarritz",                    lat:43.4832,lng:-1.5586,city:"Basque",k:"area", d:120},
+  bayonne:          {n:"Bayonne",                     lat:43.4933,lng:-1.4748,city:"Basque",k:"area", d:90},
+  hendaye:          {n:"Gare d'Hendaye",              lat:43.3540,lng:-1.7820,city:"Basque",k:"transit",d:0},
+
+  /* ---- Bordeaux ---- */
+  cite_du_vin:      {n:"La Cité du Vin",              lat:44.8625,lng:-0.5510,city:"Bordeaux",k:"sight",d:120},
+  st_michel:        {n:"Basilique Saint-Michel",      lat:44.8375,lng:-0.5668,city:"Bordeaux",k:"sight",d:30},
+  parlement:        {n:"Place du Parlement",          lat:44.8404,lng:-0.5715,city:"Bordeaux",k:"area", d:20},
+  bourse:           {n:"Place de la Bourse",          lat:44.8412,lng:-0.5697,city:"Bordeaux",k:"sight",d:30},
+  quinconces:       {n:"Place des Quinconces",        lat:44.8452,lng:-0.5745,city:"Bordeaux",k:"area", d:25},
+  capucins:         {n:"Marché des Capucins",         lat:44.8330,lng:-0.5709,city:"Bordeaux",k:"food", d:60},
+  alchimiste:       {n:"L'Alchimiste Café Boutique",  lat:44.8395,lng:-0.5720,city:"Bordeaux",k:"food", d:40,v:1},
+  zephirine:        {n:"Zéphirine",                   lat:44.8400,lng:-0.5760,city:"Bordeaux",k:"food", d:120,v:1},
+  st_emilion:       {n:"Saint-Émilion",               lat:44.8938,lng:-0.1556,city:"Bordeaux",k:"sight",d:120},
+  bdx_airport:      {n:"Bordeaux–Mérignac",           lat:44.8283,lng:-0.7156,city:"Bordeaux",k:"transit",d:0},
+
+  /* ---- city waypoints: used to pin the start/end of a travel day, dwell 0 ---- */
+  madrid_city:      {n:"Madrid",                      lat:40.4168,lng:-3.7038,city:"Madrid",k:"transit",d:0},
+  sansebastian_city:{n:"San Sebastián",               lat:43.3183,lng:-1.9812,city:"San Sebastián",k:"transit",d:0},
+  bordeaux_city:    {n:"Bordeaux",                    lat:44.8378,lng:-0.5792,city:"Bordeaux",k:"transit",d:0},
+
+  /* ---- endpoints ---- */
+  paris:            {n:"Paris",                       lat:48.8566,lng:2.3522, city:"Paris",k:"area",d:0},
+  jfk:              {n:"JFK",                         lat:40.6413,lng:-73.7781,city:"NYC",k:"transit",d:0}
+};
+
+/* Opening windows, where they matter. o:[open,close] in local time. */
+PLACES.capucins.o    = ["07:00","14:30"];   /* market closes 2:30pm — from the sheet */
+PLACES.liria.o       = ["10:00","19:00"];   /* "closes 7" — from the sheet */
+PLACES.royal_palace.o= ["10:00","18:00"];
+PLACES.cite_du_vin.o = ["10:00","18:30"];
+PLACES.fuente_de.o   = ["09:00","18:00"];
+PLACES.almudena.o    = ["10:00","20:00"];
+
+const DAYS = [
+{date:"2026-09-09",dow:"Wednesday",city:"In transit",cls:"c-transit",base:"JFK → overnight",items:[
+  {b:"evening",t:"20:40",txt:"Depart JFK",p:"jfk",k:"transit"}
+]},
+{date:"2026-09-10",dow:"Thursday",city:"Madrid",cls:"c-madrid",base:"Madrid",items:[
+  {b:"morning",t:"10:15",txt:"Land in Madrid",p:"mad_airport",k:"transit"},
+  {b:"noon",txt:"Nothing planned yet — arrival day, settle in"}
+]},
+{date:"2026-09-11",dow:"Friday",city:"Madrid",cls:"c-madrid",base:"Madrid",items:[]},
+
+{date:"2026-09-12",dow:"Saturday",city:"Madrid",cls:"c-madrid",base:"Madrid",
+ note:"Depending how Grace feels after flight — swap the walking around with shopping to stay closer to the Airbnb, and instead take the subway in the afternoon/evening to Liria Palace / Parque del Oeste.",
+ items:[
+  {b:"morning",t:"09:55",txt:"Grace arrives",k:"transit"},
+  {b:"morning",txt:"Grace settles in to Airbnb"},
+  {b:"noon",txt:"Lunch at Mercado de San Antón, or Mercado de la Paz (Casa Dani)",p:["mercado_san_anton","mercado_paz"],k:"food",alt:1},
+  {b:"noon",txt:"Walk around Chueca — potential spots below",p:"chueca",k:"area"},
+  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/CF7pUQvc4ECX66ZJ8"},
+  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/daw1ht7CsiucjSf37"},
+  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/iqj1Si8Pf8uiMwYo9"},
+  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/G5AosPdf7GmFe66Q9"},
+  {b:"afternoon",txt:"Chueca spot",u:"https://maps.app.goo.gl/xDXjX2b5Lxp2HkT68?g_st=ac"},
+  {b:"afternoon",txt:"Plaza de Cibeles — ideally go inside with tickets, up to the rooftop",p:"cibeles",k:"sight",u:"https://maps.app.goo.gl/t4vvUBcE29R7Bzat6"},
+  {b:"afternoon",txt:"Walk down Gran Vía towards Liria Palace",p:"granvia",k:"area"},
+  {b:"afternoon",txt:"Liria Palace",p:"liria",k:"sight",u:"https://maps.app.goo.gl/YZxmNfdsDtf5iie88"},
+  {b:"evening",txt:"Tour Liria Palace in the early evening — closes 7",p:"liria",k:"sight"},
+  {b:"evening",txt:"Maybe check this out",u:"https://maps.app.goo.gl/nACv5CKN7vbhA1iK9"},
+  {b:"evening",txt:"Walk around Parque del Oeste, watch sunset (sunset is late in Spain)",p:"oeste",k:"nature"},
+  {b:"evening",t:"20:30",txt:"Dinner near Retiro — reservation at Casa Julián",p:"casa_julian",k:"food",u:"https://maps.app.goo.gl/aCWsfzDjiyUnVUt7A"},
+  {b:"evening",txt:"Alt: dinner near Liria Palace",u:"https://maps.app.goo.gl/xSNbRegjZw8ZBvzUA"},
+  {b:"night",txt:"Maybe rooftop bar",u:"https://maps.app.goo.gl/r2JEFHkQNtbLoB9u8"},
+  {b:"night",txt:"Or cool bar closer to the Airbnb",u:"https://maps.app.goo.gl/VhAjGH3CGMiBsKie9"},
+  {b:"night",txt:"Walk to Airbnb — past the cathedral, along Calle Mayor",p:"calle_mayor",k:"area"},
+  {b:"night",txt:"Nightcap spot",u:"https://maps.app.goo.gl/6TkQnwkXdP6kC6YSA"}
+]},
+
+{date:"2026-09-13",dow:"Sunday",city:"Madrid",cls:"c-madrid",base:"Madrid",
+ note:"Lots of shops closed on Sundays.",
+ items:[
+  {b:"morning",txt:"Wake up 9:30"},
+  {b:"morning",txt:"Leave Airbnb by 10:30/11"},
+  {b:"noon",txt:"Bocadillo for breakfast",k:"food"},
+  {b:"noon",txt:"Morning walk to the cathedral and Royal Palace — tour both, then the Sabatini Gardens",p:["almudena","royal_palace","sabatini"],k:"sight"},
+  {b:"noon",txt:"Nun cookies on the way there",p:"carboneras",k:"food",u:"https://maps.app.goo.gl/6LpgqqV6zxgPaJHT8"},
+  {b:"noon",txt:"Lunch on the way back",u:"https://maps.app.goo.gl/cuc1qNnDCEPF42NN9"},
+  {b:"afternoon",t:"13:30",txt:"Chris and Vassilios to Madring",k:"transit"},
+  {b:"afternoon",txt:"Recommendations for Grace:"},
+  {b:"afternoon",txt:"Rec for Grace",u:"https://maps.app.goo.gl/JKHn2jjwY7yevsSJ6"},
+  {b:"afternoon",txt:"Rec for Grace",u:"https://maps.app.goo.gl/uNd1YiiYkrZ4c59X7"},
+  {b:"evening",txt:"Rec for Grace",u:"https://maps.app.goo.gl/M6SuvWBDiQxSf45L6"},
+  {b:"evening",t:"17:30",txt:"Chris back from Madring (5:30–6)",k:"transit"},
+  {b:"evening",txt:"Meet with Grace where she is"},
+  {b:"evening",txt:"Sunset / evening walk in El Buen Retiro",p:"retiro",k:"nature"},
+  {b:"evening",txt:"Dinner — options",k:"food"},
+  {b:"night",txt:"Jazz bar?",u:"https://maps.app.goo.gl/iDWDeCVxdxSHzofi6"}
+]},
+
+{date:"2026-09-14",dow:"Monday",city:"Madrid → San Sebastián",cls:"c-transit",base:"Drive day",
+ from:"madrid_city",to:"sansebastian_city",items:[
+  {b:"morning",txt:"Wake up 9–9:30"},
+  {b:"morning",txt:"Leave Airbnb by 10:30/11"},
+  {b:"noon",txt:"Pick up the rental car before leaving Madrid — bring bags to throw in the car",k:"transit"},
+  {b:"noon",txt:"Walk around and do what we haven't done yet and want to do"},
+  {b:"noon",txt:"Brunch if we leave late",u:"https://maps.app.goo.gl/BGWQjZtiY5QVMQGn6"},
+  {b:"noon",txt:"Drive!",k:"transit",u:"https://maps.app.goo.gl/Z5tDwe6c3hvNx9Bn9"},
+  {b:"noon",txt:"Segovia — if we make the detour",p:"segovia",k:"sight"},
+  {b:"afternoon",txt:"Stop in Burgos to stretch legs and use the bathroom — optional",p:"burgos",k:"area"},
+  {b:"afternoon",txt:"Check in to Hotel SanSebay — likely as late as ~10pm given the drive"},
+  {b:"evening",txt:"If wanted, food after check-in near the hotel (plenty nearby)",k:"food"},
+  {b:"evening",txt:"Near-hotel option",u:"https://maps.app.goo.gl/PMHpoz9kPS4m8zxa8"},
+  {b:"evening",txt:"Near-hotel option",u:"https://maps.app.goo.gl/c5LWH8qQFsDjjomP6"}
+]},
+
+{date:"2026-09-15",dow:"Tuesday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
+ note:"Eat + explore.",
+ items:[
+  {b:"morning",txt:"Rest, wake up 10:00"},
+  {b:"morning",txt:"Walk near the Airbnb",p:"parte_vieja",k:"area"},
+  {b:"noon",txt:"PINTXO CRAWL",k:"food"},
+  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/G42HhWWAP7vRWLsR8"},
+  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/yJjZ5Fcyf1RYrjcN7"},
+  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/Aiq48zGgszpihvLa6"},
+  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/h7fzWHaPBBqZBg2A6"},
+  {b:"afternoon",t:"15:00",txt:"Ganbara — reservation, end the crawl here",p:"ganbara",k:"food",u:"https://maps.app.goo.gl/GeTJVeqNnP6SsVMM7"},
+  {b:"afternoon",txt:"Afterwards walk around Gros",p:"gros",k:"area"},
+  {b:"afternoon",txt:"Gros spot",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8"},
+  {b:"afternoon",txt:"Gros spot",u:"https://maps.app.goo.gl/jRwjJYV3x3EScvN59"}
+]},
+{date:"2026-09-16",dow:"Wednesday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
+ fork:"Two competing plans for this day — pick one.",
+ variants:[
+  {id:"picos",label:"Picos de Europa",note:"Further routing necessary. Long day: ~4h drive each way.",
+   from:"sansebastian_city",to:"sansebastian_city",items:[
+    {b:"morning",t:"07:00",txt:"Wake up early",k:"transit"},
+    {b:"morning",txt:"Drive to Picos de Europa",k:"transit"},
+    {b:"noon",t:"11:00",txt:"Arrive Picos de Europa",p:"fuente_de",k:"nature"},
+    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/ZBZoKwbm7UDsVLc67"},
+    {b:"noon",txt:"Early food?",u:"https://maps.app.goo.gl/kYgcTNBJjhaTRtWNA"},
+    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/7WkvEqiZVT5Do58Y7"},
+    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/9u97oTUhhuu55CbbA"},
+    {b:"noon",txt:"Teleférico de Fuente Dé (Camaleño)",p:"fuente_de",k:"nature",u:"https://www.tripadvisor.com/Attraction_Review-g1370252-d10489255-Reviews-Teleferico-Camaleno_Cantabria.html"},
+    {b:"afternoon",txt:"Potes and around",p:"potes",k:"area"},
+    {b:"afternoon",txt:"Picos spot",u:"https://maps.app.goo.gl/YDSuAYq5aBNJgaZU8"},
+    {b:"afternoon",txt:"Picos spot",u:"https://maps.app.goo.gl/BNNqJxQD3VLNKG3k7"},
+    {b:"afternoon",txt:"Ten best things to see in Picos de Europa",u:"https://www.turismoasturias.es/en/-/blogs/las-10-mejores-cosas-que-ver-y-hacer-en-la-comarca-de-picos-de-europa"},
+    {b:"afternoon",txt:"Drive back from Picos",k:"transit"},
+    {b:"evening",txt:"Santander spot",u:"https://maps.app.goo.gl/GT7ThcH8mvVuQEZc7"},
+    {b:"evening",txt:"Santander spot",u:"https://maps.app.goo.gl/g8pxev4XyK7jUekb9"},
+    {b:"evening",txt:"Stop in Santander for dinner + walk around",p:"santander",k:"food"},
+    {b:"evening",txt:"Drive back to San Sebastián",k:"transit"}
+  ]},
+  {id:"basque",label:"Bilbao / Biarritz",note:"Day trip day — can also be left up to how we feel.",
+   from:"sansebastian_city",to:"sansebastian_city",items:[
+    {b:"morning",txt:"Wake up normal, 9–10"},
+    {b:"morning",txt:"Walk around the area near the Airbnb, breakfast",p:"parte_vieja",k:"area"},
+    {b:"noon",txt:"Drive to either Bilbao or Bayonne / Biarritz",k:"transit"},
+    {b:"noon",txt:"Day trip to the other cities / towns (1+ hour drive)",p:["bilbao","biarritz"],k:"area",alt:1},
+    {b:"noon",txt:"Also can beach",k:"nature"},
+    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/a96QWA1XRcj5S8wy7"},
+    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/hkRTTsGq7GGYXXze9"},
+    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77"},
+    {b:"afternoon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/jd1TymUyzwB3id3j6"}
+  ]}
+ ],items:[]},
+
+{date:"2026-09-17",dow:"Thursday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
+ note:"Probably a more relaxed catch-all type day.",
+ items:[
+  {b:"morning",txt:"Wake up 9–10"},
+  {b:"noon",txt:"Beach?",p:"concha",k:"nature"},
+  {b:"noon",txt:"Walk around Ondarreta",p:"ondarreta",k:"nature"},
+  {b:"noon",txt:"Beach-area spot",u:"https://maps.app.goo.gl/DybnHXWMpX9LXJiU9"},
+  {b:"noon",txt:"Beach-area spot",u:"https://maps.app.goo.gl/fWkWdH1Refv2CwmGA"},
+  {b:"noon",t:"13:00",txt:"Lunch — current reservation set for 1pm",k:"food",u:"https://maps.app.goo.gl/Bc1HURMcrgHuVXKA7"},
+  {b:"noon",txt:"Drive around the close area",k:"transit"},
+  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/5FfsMMitryBxKtYz5"},
+  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/2Ec2miKnuEoRjykHA"},
+  {b:"afternoon",txt:"Spanish supermarket lol",u:"https://maps.app.goo.gl/CMqMT76zVYPX7LFDA"},
+  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/xGhcc7zxvFB2ag6Z6"},
+  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/vF1kQd1HCBQUPBpL9"},
+  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/YsUw4BuEtHKrgpdEA"},
+  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/w2zTMV6DJMbpv2yTA"},
+  {b:"evening",txt:"Dinner: more pintxos",p:"parte_vieja",k:"food"},
+  {b:"evening",txt:"Pintxo spot",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8"},
+  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/xdpQc1fyjKacpxKf6"},
+  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/ywtbcPBSPeMBdKQXA"},
+  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/t7fgkh29CGQNRg5z8"},
+  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/xYZj3jCT4v6Bxk2d6"}
+]},
+
+{date:"2026-09-18",dow:"Friday",city:"San Sebastián → Bordeaux",cls:"c-transit",base:"Train day",
+ from:"sansebastian_city",to:"bordeaux_city",
+ note:"Leave San Sebastián as early as we can, get to Bordeaux, see the sights. Leg one is to Hendaye; Hendaye → Bordeaux is the TER. A taxi from San Sebastián to Hendaye also works.",
+ items:[
+  {b:"morning",t:"09:30",txt:"Leave San Sebastián — local train to Hendaye, no advance ticket",p:["amara","hendaye"],k:"transit",u:"https://maps.app.goo.gl/hXJDRyrTjWTPcrSn8"},
+  {b:"morning",t:"10:00",txt:"Check out of SanSebay by 10:00, head to the Euskotren",k:"transit"},
+  {b:"noon",txt:"Arrive Bordeaux 1–2pm",k:"transit"},
+  {b:"noon",txt:"Settle in to the Airbnb"},
+  {b:"noon",txt:"L'Alchimiste Café Boutique",p:"alchimiste",k:"food"},
+  {b:"noon",txt:"La Cité du Vin — ticket is good for entry at any time",p:"cite_du_vin",k:"sight",u:"https://maps.app.goo.gl/YuSrTb7tuG44e7Nu5"},
+  {b:"noon",txt:"Walk around — small pretty mall!",u:"https://maps.app.goo.gl/kbtAdciA8Qw4hXJ88"},
+  {b:"noon",txt:"Grab a bite — a late heavy lunch, or wait until dinner",k:"food"},
+  {b:"afternoon",txt:"Lunch option",u:"https://maps.app.goo.gl/4Bq1NuEwSxE5tD5W6"},
+  {b:"afternoon",txt:"Basilique Saint-Michel",p:"st_michel",k:"sight"},
+  {b:"afternoon",txt:"Place du Parlement",p:"parlement",k:"area"},
+  {b:"evening",txt:"Place de la Bourse",p:"bourse",k:"sight"},
+  {b:"evening",txt:"Place des Quinconces",p:"quinconces",k:"area"},
+  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/rPRM8vfohVCYsY4h6"},
+  {b:"evening",txt:"Head back towards the Airbnb, walk around"},
+  {b:"evening",txt:"Chill cafe",u:"https://maps.app.goo.gl/xTGBtE4mWSnrSzM18"},
+  {b:"night",txt:"Walk more around old Bordeaux"},
+  {b:"night",txt:"Late dinner after the opera, if wanted",u:"https://maps.app.goo.gl/gpDwnR7Rp6KpfsLz6"},
+  {b:"night",txt:"Very famous wine bar",u:"https://share.google/mhNvyJWCkawYtPLNZ"}
+]},
+
+{date:"2026-09-19",dow:"Saturday",city:"Bordeaux",cls:"c-bordeaux",base:"Bordeaux",
+ from:"bordeaux_city",to:"bordeaux_city",
+ note:"Vineyard country + evening in Bordeaux.",
+ items:[
+  {b:"morning",txt:"Wake up 9–10:30"},
+  {b:"morning",txt:"Breakfast at the market, or lunch depending on the vibe — closes 2:30pm",p:"capucins",k:"food",u:"https://share.google/iffxnTvimkBZruJPm"},
+  {b:"noon",txt:"Pick up the rental car",k:"transit"},
+  {b:"noon",txt:"Drive to Saint-Émilion",p:"st_emilion",k:"sight",u:"https://maps.app.goo.gl/7RzS9JsXUZwYTrGRA"},
+  {b:"noon",txt:"Saint-Émilion spot",u:"https://maps.app.goo.gl/kqCn26ZxynPDEoz56"},
+  {b:"noon",txt:"Lunch here!",u:"https://maps.app.goo.gl/aH5tnbLqMvNqnX258"},
+  {b:"noon",txt:"Or lunch here",u:"https://www.menumodo.com/app.php/viewer/outlet/11926/58442?lang=en&tags=h"},
+  {b:"noon",t:"14:30",txt:"Vineyard tour",p:"st_emilion",k:"sight",u:"https://maps.app.goo.gl/rXw4ThnxLmr5wsQG9"},
+  {b:"afternoon",txt:"Drive back to Bordeaux",k:"transit"},
+  {b:"afternoon",txt:"Depending on time, walk around"},
+  {b:"afternoon",txt:"Bordeaux spot",u:"https://maps.app.goo.gl/tyALcBkHg7DUjdgw6"},
+  {b:"afternoon",txt:"Bordeaux spot",u:"https://maps.app.goo.gl/5P2J8HJEYiJRwzQi8"},
+  {b:"evening",txt:"Walk around more, see sights not seen the previous day"},
+  {b:"evening",t:"20:00",txt:"Dinner: Zéphirine — reservation for 8pm",p:"zephirine",k:"food",u:"https://zephirine.fr/restaurant-epicerie-fine-bordeaux-2/"},
+  {b:"evening",txt:"After-dinner bar",k:"bar"},
+  {b:"night",txt:"Traditional outside seating + music, several in this area",u:"https://maps.app.goo.gl/s87dhZYpMEEb3xJKA"}
+]},
+
+{date:"2026-09-20",dow:"Sunday",city:"Bordeaux",cls:"c-bordeaux",base:"Bordeaux",items:[
+  {b:"morning",t:"11:50",txt:"Grace's flight",p:"bdx_airport",k:"transit"}
+]},
+{date:"2026-09-21",dow:"Monday",   city:"Bordeaux",cls:"c-bordeaux",base:"Bordeaux",items:[]},
+{date:"2026-09-22",dow:"Tuesday",  city:"Bordeaux",cls:"c-bordeaux",base:"Bordeaux",items:[]},
+{date:"2026-09-23",dow:"Wednesday",city:"Bordeaux → Paris",cls:"c-transit",base:"Travel day",items:[]},
+{date:"2026-09-24",dow:"Thursday", city:"Paris",cls:"c-paris",base:"Paris",items:[]},
+{date:"2026-09-25",dow:"Friday",   city:"Paris",cls:"c-paris",base:"Paris",items:[]},
+{date:"2026-09-26",dow:"Saturday", city:"Paris",cls:"c-paris",base:"Paris",items:[]},
+{date:"2026-09-27",dow:"Sunday",   city:"Paris → NYC",cls:"c-nyc",base:"Fly home",items:[
+  {b:"morning",txt:"Leave Paris",k:"transit"},
+  {b:"evening",txt:"NYC",p:"jfk",k:"transit"}
+]}
+];
+
+const LEGS = [
+  {city:"c-transit",     h:"JFK → Madrid",              m:"9 – 10 Sep · overnight flight", p:"Depart 20:40, land 10:15."},
+  {city:"c-madrid",      h:"Madrid",                    m:"10 – 14 Sep · 4 nights",        p:"Grace joins on the 12th. Two fully-planned days, two still open."},
+  {city:"c-transit",     h:"Madrid → San Sebastián",    m:"14 Sep · rental car",           p:"Long drive, optional stops in Segovia and Burgos. Check-in could be as late as 10pm."},
+  {city:"c-sansebastian",h:"San Sebastián",             m:"14 – 18 Sep · 4 nights",        p:"Pintxo crawl, a beach day, and one day still torn between Picos de Europa and Bilbao/Biarritz."},
+  {city:"c-transit",     h:"San Sebastián → Bordeaux",  m:"18 Sep · train via Hendaye",    p:"Local train to Hendaye, then TER to Bordeaux. No advance ticket needed."},
+  {city:"c-bordeaux",    h:"Bordeaux",                  m:"18 – 23 Sep · 5 nights",        p:"Saint-Émilion and the vineyards on the 19th. Grace flies out on the 20th. Three days still blank."},
+  {city:"c-transit",     h:"Bordeaux → Paris",          m:"23 Sep",                        p:"Mode not decided yet — TGV is roughly 2h10."},
+  {city:"c-paris",       h:"Paris",                     m:"23 – 27 Sep · 4 nights",        p:"Entirely unplanned."},
+  {city:"c-nyc",         h:"Paris → NYC",               m:"27 Sep",                        p:"Home."}
+];
+
+const PEOPLE = [
+  {d:"12 Sep",t:"09:55",w:"Grace arrives",       s:"Madrid — settles into the Airbnb"},
+  {d:"13 Sep",t:"13:30",w:"Chris + Vassilios to Madring", s:"Grace has her own recommendations for the afternoon"},
+  {d:"13 Sep",t:"17:30",w:"Chris back from Madring",      s:"5:30–6 — then meet Grace wherever she is"},
+  {d:"20 Sep",t:"11:50",w:"Grace flies out",     s:"From Bordeaux"}
+];
+</script>
+
+<script>
+/* ============================ helpers ============================ */
+const $  = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+const asArr = v => v==null ? [] : (Array.isArray(v)?v:[v]);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const BLOCKS = [["morning","Morning"],["noon","Noon"],["afternoon","Afternoon"],["evening","Evening"],["night","Night"]];
+
+const toMin = t => { const [h,m]=t.split(":").map(Number); return h*60+m; };
+const fmtT  = m => { m=((Math.round(m)%1440)+1440)%1440; return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0"); };
+const fmtDur= m => { m=Math.round(m); const h=Math.floor(m/60), r=m%60; return h? (h+"h "+String(r).padStart(2,"0")+"m") : (r+"m"); };
+const fmtKm = k => k<10 ? k.toFixed(1)+" km" : Math.round(k)+" km";
+const dayObj = d => new Date(d+"T00:00:00");
+const dayNum = d => dayObj(d).getDate();
+const monShort = d => dayObj(d).toLocaleString("en",{month:"short"});
+
+/* --------- geo + travel model ---------
+   Straight-line haversine, inflated by a detour factor to approximate real
+   street distance. Under 2.2 km we assume walking; beyond that, driving. */
+const DETOUR_WALK = 1.25, DETOUR_DRIVE = 1.30;
+const SPEED_WALK = 4.5;      /* km/h, city pace with crossings */
+const SPEED_DRIVE = 62;      /* km/h, mixed road average */
+const WALK_MAX_KM = 2.2;
+
+function hav(a,b){
+  const R=6371, rad=Math.PI/180;
+  const dLat=(b.lat-a.lat)*rad, dLng=(b.lng-a.lng)*rad;
+  const la1=a.lat*rad, la2=b.lat*rad;
+  const x=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function travel(pa,pb){
+  const straight = hav(pa,pb);
+  const walk = straight<=WALK_MAX_KM;
+  const km = straight * (walk?DETOUR_WALK:DETOUR_DRIVE);
+  const min = km / (walk?SPEED_WALK:SPEED_DRIVE) * 60;
+  return {km, min: min + (walk?0:6), mode: walk?"walk":"drive", straight};
+}
+function pathCost(seq){
+  let km=0,min=0;
+  for(let i=0;i<seq.length-1;i++){ const t=travel(PLACES[seq[i].pid],PLACES[seq[i+1].pid]); km+=t.km; min+=t.min; }
+  return {km,min};
+}
+
+/* --------- collect a day's stops --------- */
+function dayItems(day,variant){
+  if(day.variants){
+    const v = day.variants.find(x=>x.id===variant) || day.variants[0];
+    return v.items;
+  }
+  return day.items||[];
+}
+function dayStops(day,variant){
+  const out=[], seen=new Map();
+  let ord=0;
+  const push=(pid,o)=>{
+    const s={key:o.key||pid, pid, label:o.label, fixed:o.fixed||null, url:o.url||null,
+             order:o.order!=null?o.order:ord++, pin:o.pin||null,
+             dwell:o.dwell!=null?o.dwell:(PLACES[pid].d||30), kind:PLACES[pid].k,
+             alts:o.alts||null};
+    out.push(s); if(!o.pin) seen.set(pid,s);
+    return s;
+  };
+  const vcfg = day.variants ? (day.variants.find(x=>x.id===variant)||day.variants[0]) : null;
+  const FROM = (vcfg&&vcfg.from) || day.from, TO = (vcfg&&vcfg.to) || day.to;
+  if(FROM) push(FROM,{key:FROM+"#start",label:"Start",pin:"start",dwell:0,order:-1});
+
+  dayItems(day,variant).forEach((it,idx)=>{
+    const pids = asArr(it.p).filter(p=>PLACES[p]);
+    if(!pids.length) return;
+    /* "or" items contribute one stop; the rest are recorded as alternatives */
+    const use = it.alt ? pids.slice(0,1) : pids;
+    const alts = it.alt ? pids.slice(1).map(p=>PLACES[p].n) : null;
+    use.forEach((pid,j)=>{
+      /* a fixed time belongs to the FIRST named place of an item, not all of them */
+      const fixed = (j===0 && it.t) ? it.t : null;
+      if(PLACES[pid].k==="transit" && !fixed) return;
+      if(seen.has(pid)){
+        const s=seen.get(pid);
+        if(fixed && !s.fixed){ s.fixed=fixed; s.label=it.txt; s.url=asArr(it.u)[0]||s.url; }
+        return;
+      }
+      push(pid,{label:it.txt, fixed, url:asArr(it.u)[0]||null, order:idx, alts:j===0?alts:null});
+    });
+  });
+
+  if(TO) push(TO,{key:TO+"#end",label:"End",pin:"end",dwell:0,order:9e6});
+  return out;
+}
+
+/* The day starts at the earliest hour the sheet actually names — a 07:00 wake-up
+   or a 09:30 train counts, even though neither is a place on the map. */
+function dayStart(day,variant){
+  const ts = dayItems(day,variant).filter(it=>it.t).map(it=>toMin(it.t));
+  if(!ts.length) return 10*60;
+  return Math.min(10*60, Math.min(...ts));
+}
+/* If we depart from a pinned start and would still miss the first booking,
+   leave earlier rather than reporting a failure we could have avoided. */
+function solveDay(day,variant){
+  const stops = dayStops(day,variant);
+  let start = dayStart(day,variant);
+  let seq = optimize(stops,start);
+  let plan = buildPlan(seq,start);
+  const firstLate = plan.rows.find(r=>r.late>0);
+  if(firstLate && seq[0] && seq[0].pin==="start"){
+    start = Math.max(4*60, start - firstLate.late);
+    seq = optimize(stops,start);
+    plan = buildPlan(seq,start);
+  }
+  return {stops, seq, plan, start};
+}
+
+/* --------- ordering: anchors pinned, cheapest insertion, then 2-opt --------- */
+/* A sequence is structurally legal when pinned endpoints sit at the ends and
+   every booked time still runs forwards. */
+function seqLegal(seq){
+  if(seq.length && seq.some(s=>s.pin==="start") && seq[0].pin!=="start") return false;
+  if(seq.length && seq.some(s=>s.pin==="end") && seq[seq.length-1].pin!=="end") return false;
+  let last=-1;
+  for(const s of seq){ if(s.fixed){ const m=toMin(s.fixed); if(m<last) return false; last=m; } }
+  return true;
+}
+/* Cost in km-equivalent: real distance, plus a heavy charge for arriving late to
+   a booking or reaching somewhere after it shuts. 0.6 km per minute is stiff
+   enough that the solver will happily walk further to make a reservation. */
+const PENALTY_PER_MIN = 0.6, IDLE_PER_MIN = 0.12;
+/* When two orders cost the same, prefer the one closer to how you wrote it down. */
+function orderBias(seq){
+  const sorted = seq.slice().sort((a,b)=>a.order-b.order);
+  const rank = new Map(sorted.map((s,i)=>[s.key,i]));
+  let d=0; seq.forEach((s,i)=>{ d += Math.abs(i - rank.get(s.key)); });
+  return d;
+}
+function seqScore(seq,startMin){
+  const p = buildPlan(seq,startMin);
+  let pen = 0;
+  p.rows.forEach(r=>{ pen += (r.late||0) + (r.shut||0); });
+  /* Charge only the wait BEFORE the first stop — that is a day that opens at a
+     3pm reservation and wastes the morning. Charging mid-day gaps too would pay
+     the solver to wander further just to burn the clock. */
+  const lateStart = p.rows.length ? (p.rows[0].wait||0) : 0;
+  return p.tot.km + pen*PENALTY_PER_MIN + lateStart*IDLE_PER_MIN + orderBias(seq)*0.02;
+}
+function optimize(stops,startMin){
+  if(stops.length<2) return stops.slice();
+  const pinS = stops.find(s=>s.pin==="start"), pinE = stops.find(s=>s.pin==="end");
+  const anchors = stops.filter(s=>s.fixed && !s.pin).sort((a,b)=>toMin(a.fixed)-toMin(b.fixed));
+  const free    = stops.filter(s=>!s.fixed && !s.pin);
+
+  let seq = [];
+  if(pinS) seq.push(pinS);
+  seq = seq.concat(anchors);
+  if(pinE) seq.push(pinE);
+  if(!seq.length) seq=[free.shift()];
+
+  /* cheapest insertion, scored on distance + schedule pain */
+  free.forEach(f=>{
+    let best=null;
+    for(let i=0;i<=seq.length;i++){
+      const trial = seq.slice(); trial.splice(i,0,f);
+      if(!seqLegal(trial)) continue;
+      const c = seqScore(trial,startMin);
+      if(!best || c<best.c) best={i,c};
+    }
+    if(best) seq.splice(best.i,0,f);
+    else seq.push(f);
+  });
+
+  /* 2-opt on the same score */
+  let improved=true, guard=0, cur=seqScore(seq,startMin);
+  while(improved && guard++<40){
+    improved=false;
+    for(let i=0;i<seq.length-1;i++){
+      for(let j=i+1;j<seq.length;j++){
+        const trial = seq.slice(0,i).concat(seq.slice(i,j+1).reverse(), seq.slice(j+1));
+        if(!seqLegal(trial)) continue;
+        const c = seqScore(trial,startMin);
+        if(c < cur - 1e-9){ seq=trial; cur=c; improved=true; }
+      }
+    }
+  }
+  return seq;
+}
+
+/* --------- build a timed plan from an ordered sequence --------- */
+function buildPlan(seq,startMin){
+  if(!seq.length) return {rows:[],tot:{km:0,travel:0,dwell:0},warn:[]};
+  const fixedMins = seq.filter(s=>s.fixed).map(s=>toMin(s.fixed));
+  const dflt = startMin!=null ? startMin : 10*60;
+  let clock = Math.min(dflt, fixedMins.length?Math.min(...fixedMins):dflt);
+  const rows=[], warn=[];
+  let totKm=0, totTravel=0, totDwell=0;
+
+  seq.forEach((s,i)=>{
+    let wait=0, late=0, shut=0;
+    const pl = PLACES[s.pid];
+    if(s.fixed){
+      const f=toMin(s.fixed);
+      if(clock < f){ wait = f-clock; clock = f; }
+      else if(clock > f+1){ late = clock-f; warn.push({t:"late",name:pl.n, by:late, at:s.fixed}); clock=f; }
+    }
+    if(pl.o){
+      const [op,cl]=pl.o.map(toMin);
+      if(clock < op){ wait += op-clock; clock = op; }
+      if(clock + Math.min(s.dwell,20) > cl){
+        shut = clock + Math.min(s.dwell,20) - cl;
+        warn.push({t:"shut",name:pl.n, by:shut, at:pl.o[1]});
+      }
+    }
+    const arrive=clock;
+    clock += s.dwell; totDwell += s.dwell;
+    const row={s, arrive, depart:clock, wait, late, shut, hop:null};
+    if(i<seq.length-1){
+      const t=travel(PLACES[s.pid],PLACES[seq[i+1].pid]);
+      row.hop=t; totKm+=t.km; totTravel+=t.min; clock+=t.min;
+    }
+    rows.push(row);
+  });
+  return {rows, tot:{km:totKm, travel:totTravel, dwell:totDwell,
+          start:rows[0].arrive, end:rows[rows.length-1].depart}, warn};
+}
+</script>
+
+<script>
+/* ============================ map rendering ============================ */
+const MAP_W=580, MAP_H=420, MAP_PAD=44;
+
+function projector(pts){
+  const mLat = pts.reduce((a,p)=>a+p.lat,0)/pts.length;
+  const kx = Math.cos(mLat*Math.PI/180);
+  const xs = pts.map(p=>p.lng*kx), ys = pts.map(p=>-p.lat);
+  let x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
+  let dx=x1-x0, dy=y1-y0;
+  const minSpan=0.004;
+  if(dx<minSpan){ const c=(x0+x1)/2; x0=c-minSpan/2; x1=c+minSpan/2; dx=minSpan; }
+  if(dy<minSpan){ const c=(y0+y1)/2; y0=c-minSpan/2; y1=c+minSpan/2; dy=minSpan; }
+  const s = Math.min((MAP_W-2*MAP_PAD)/dx, (MAP_H-2*MAP_PAD)/dy);
+  const ox = (MAP_W - dx*s)/2, oy = (MAP_H - dy*s)/2;
+  const fn = p => ({ x:(p.lng*kx - x0)*s + ox, y:(-p.lat - y0)*s + oy });
+  fn.kmPerPx = 111.32 / s;      /* degrees→km at this scale */
+  return fn;
+}
+
+function renderMap(seq, listed){
+  if(!seq.length) return "";
+  const pts = seq.map(s=>PLACES[s.pid]);
+  const pr  = projector(pts);
+  const P   = seq.map(s=>pr(PLACES[s.pid]));
+
+  let g="";
+  for(let i=1;i<5;i++){
+    const y=MAP_H*i/5, x=MAP_W*i/5;
+    g+=`<line class="mp-grat" x1="0" y1="${y.toFixed(1)}" x2="${MAP_W}" y2="${y.toFixed(1)}"/>`
+     + `<line class="mp-grat" x1="${x.toFixed(1)}" y1="0" x2="${x.toFixed(1)}" y2="${MAP_H}"/>`;
+  }
+
+  const dline = P.map((p,i)=>(i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" ");
+  const LP = listed.map(s=>pr(PLACES[s.pid]));
+  const gline = LP.map((p,i)=>(i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" ");
+
+  /* scale bar: pick a round number of km that fits ~110px */
+  const targetKm = 110*pr.kmPerPx;
+  const nice=[0.1,0.2,0.5,1,2,5,10,20,50,100,200].reduce((a,b)=>Math.abs(b-targetKm)<Math.abs(a-targetKm)?b:a);
+  const barPx = nice/pr.kmPerPx;
+
+  /* Labels are placed after the pins, nudged vertically so two that land on the
+     same line don't print on top of each other. */
+  const shown = new Set();
+  const lay = seq.map((s,i)=>{
+    /* a round trip returns to its start — label that point once */
+    const dup = shown.has(s.pid); shown.add(s.pid);
+    return {i, x:P[i].x, y:P[i].y, name:dup?"":PLACES[s.pid].n,
+            flip:P[i].x > MAP_W*0.62, ly:P[i].y};
+  });
+  const lastOn = {true:-99, false:-99};
+  lay.slice().sort((a,b)=>a.y-b.y).forEach(L=>{
+    const k = String(L.flip);
+    if(L.ly - lastOn[k] < 13) L.ly = lastOn[k] + 13;
+    lastOn[k] = L.ly;
+  });
+  const LAY = new Map(lay.map(L=>[L.i,L]));
+
+  const pins = seq.map((s,i)=>{
+    const p=P[i], lock=!!s.fixed;
+    const L=LAY.get(i), flip=L.flip;
+    const name=L.name, full=PLACES[s.pid].n;
+    const lx = flip ? p.x-13 : p.x+13, anch = flip?"end":"start";
+    const w = (name||"").length*5.0+8;
+    return `<g class="mp-g" data-i="${i}">`
+      + (name && Math.abs(L.ly-p.y)>2
+          ? `<line class="mp-grat" x1="${p.x.toFixed(1)}" y1="${p.y.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${L.ly.toFixed(1)}" opacity=".9"/>`
+          : "")
+      + (name?`<rect class="mp-lbl-bg" x="${(flip?lx-w+4:lx-4).toFixed(1)}" y="${(L.ly-7).toFixed(1)}" width="${w.toFixed(1)}" height="14" rx="3"/>`:"")
+      + `<circle class="mp-pin${lock?" lock":""}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="9"><title>${esc(full)}</title></circle>`
+      + `<text class="mp-num" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}">${i+1}</text>`
+      + (name?`<text class="mp-lbl" x="${lx.toFixed(1)}" y="${(L.ly+3.2).toFixed(1)}" text-anchor="${anch}">${esc(name)}</text>`:"")
+      + `</g>`;
+  }).join("");
+
+  return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" role="img" aria-label="Route map for the selected day">
+    ${g}
+    <path class="mp-route ghost" d="${gline}"/>
+    <path class="mp-route" d="${dline}"/>
+    ${pins}
+    <g transform="translate(${MAP_PAD-16},${MAP_H-18})">
+      <line class="mp-scale" x1="0" y1="0" x2="${barPx.toFixed(1)}" y2="0"/>
+      <line class="mp-scale" x1="0" y1="-4" x2="0" y2="4"/>
+      <line class="mp-scale" x1="${barPx.toFixed(1)}" y1="-4" x2="${barPx.toFixed(1)}" y2="4"/>
+      <text class="mp-scale-t" x="${(barPx/2).toFixed(1)}" y="-7" text-anchor="middle">${nice<1?nice*1000+" m":nice+" km"}</text>
+    </g>
+  </svg>`;
+}
+
+/* ============================ routes tab ============================ */
+let routeState = {date:null, variant:null};
+
+function routableDays(){
+  return DAYS.filter(d=>{
+    if(d.variants) return d.variants.some(v=>dayStops(d,v.id).length>=2);
+    return dayStops(d).length>=2;
+  });
+}
+function renderDayPick(){
+  const ok = new Set(routableDays().map(d=>d.date));
+  $("#daypick").innerHTML = DAYS.map(d=>{
+    const on = d.date===routeState.date;
+    return `<button class="daybtn ${d.cls}" type="button" data-date="${d.date}"
+      aria-pressed="${on}" ${ok.has(d.date)?"":"disabled"}>
+      <span class="dw">${d.dow.slice(0,3)}</span>
+      <span class="dd">${dayNum(d.date)}</span>
+      <span class="dn">${esc(d.city.split(" → ")[0].slice(0,11))}</span>
+    </button>`;
+  }).join("");
+  $$("#daypick .daybtn").forEach(b=>b.onclick=()=>{
+    routeState.date=b.dataset.date; routeState.variant=null; renderDayPick(); renderRoute();
+  });
+}
+
+function renderRoute(){
+  const day = DAYS.find(d=>d.date===routeState.date);
+  const host = $("#routebody");
+  if(!day){ host.innerHTML=`<p class="lede">Pick a day above.</p>`; return; }
+
+  let vhtml="";
+  if(day.variants){
+    if(!routeState.variant) routeState.variant = day.variants[0].id;
+    vhtml = `<div class="variant">`+ day.variants.map(v=>
+      `<button class="vbtn" type="button" data-v="${v.id}" aria-pressed="${v.id===routeState.variant}">${esc(v.label)}</button>`
+    ).join("") + `</div>`;
+  }
+
+  const solved = solveDay(day, routeState.variant);
+  const stops = solved.stops, seq = solved.seq, plan = solved.plan;
+  const listed = stops.slice().sort((a,b)=>a.order-b.order);
+  const listedPlan = buildPlan(listed, solved.start);
+  const savedKm  = listedPlan.tot.km - plan.tot.km;
+  const savedMin = listedPlan.tot.travel - plan.tot.travel;
+
+  const unresolved = dayItems(day,routeState.variant).filter(it=>asArr(it.u).length && !asArr(it.p).length).length;
+  const vNote = day.variants ? (day.variants.find(v=>v.id===routeState.variant)||{}).note : day.note;
+
+  const itin = plan.rows.map((r,i)=>{
+    const pl = PLACES[r.s.pid];
+    const bits=[];
+    if(r.wait>4) bits.push(`<span class="sub">${fmtDur(r.wait)} spare before this</span>`);
+    if(r.late)   bits.push(`<span class="sub" style="color:var(--warn)">${fmtDur(r.late)} late for the booking</span>`);
+    if(r.shut)   bits.push(`<span class="sub" style="color:var(--warn)">closes ${pl.o[1]} — you arrive too late</span>`);
+    const unsaid = (r.s.alts||[]).filter(a=>!(r.s.label||"").includes(a));
+    if(unsaid.length) bits.push(`<span class="sub">or ${esc(unsaid.join(", "))}</span>`);
+    const rowH = `<div class="stop ${r.s.fixed?"locked":""}" data-i="${i}">
+        <span class="num">${i+1}</span>
+        <span class="when">${fmtT(r.arrive)}<br><span style="opacity:.6">${fmtT(r.depart)}</span></span>
+        <span class="what">
+          <b>${r.s.url?`<a href="${r.s.url}" target="_blank" rel="noopener">${esc(pl.n)}</a>`:esc(pl.n)}</b>
+          ${r.s.fixed?`<span class="chip lock" style="margin-left:.35rem">booked ${r.s.fixed}</span>`:""}
+          <span class="sub"> · ${fmtDur(r.s.dwell)} · ${esc(r.s.label||pl.k)}</span>
+          ${bits.join(" ")}
+        </span></div>`;
+    const hop = r.hop ? `<div class="hop"><span>${r.hop.mode==="walk"?"walk":"drive"}</span>
+        <span class="dash"></span><span>${fmtKm(r.hop.km)} · ${fmtDur(r.hop.min)}</span></div>` : "";
+    return rowH+hop;
+  }).join("");
+
+  host.innerHTML = `
+  ${vhtml}
+  <div class="routelayout ${day.cls}">
+    <div>
+      <div class="mapbox ${day.cls}">
+        ${renderMap(seq, listed)}
+        <div class="maphint">
+          <span>Solid line — suggested order &nbsp;·&nbsp; Dashed — the order you listed</span>
+          <span>${plan.rows.length} stops</span>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-h"><h3>The math</h3><span class="eyebrow">Why this order</span></div>
+        <div class="card-b">
+          <div class="mathrow">
+            <div class="mathcell"><span class="v">${fmtKm(plan.tot.km)}</span><span class="k">Total distance</span></div>
+            <div class="mathcell"><span class="v">${fmtDur(plan.tot.travel)}</span><span class="k">In motion</span></div>
+            <div class="mathcell"><span class="v">${fmtDur(plan.tot.dwell)}</span><span class="k">At stops</span></div>
+            <div class="mathcell"><span class="v">${fmtT(plan.tot.start)}–${fmtT(plan.tot.end)}</span><span class="k">Day span</span></div>
+            <div class="mathcell"><span class="v">${plan.rows.filter(r=>r.s.fixed).length}</span><span class="k">Pinned to a clock</span></div>
+          </div>
+          <p style="margin:.8rem 0 0;font-size:.84rem;color:var(--ink-mid);">
+            ${savedKm>0.05
+              ? `Re-ordering saves <span class="saving">${fmtKm(savedKm)}</span> and
+                 <span class="saving">${fmtDur(savedMin)}</span> against the order in the sheet
+                 (${fmtKm(listedPlan.tot.km)} → ${fmtKm(plan.tot.km)}).`
+              : `Your listed order is already near-optimal — no meaningful saving available.`}
+            Reservations are pinned to their booked time; everything else is slotted around them.
+          </p>
+          ${plan.warn.map(w=> w.t==="shut"
+            ? `<div class="alert"><b>Closed:</b> you reach ${esc(w.name)} about ${fmtDur(w.by)} after it
+               shuts at ${w.at}. Move it earlier or drop it.</div>`
+            : `<div class="alert"><b>Tight:</b> at this pace you reach ${esc(w.name)} about ${fmtDur(w.by)}
+               after the ${w.at} booking. Drop a stop earlier in the day or start sooner.</div>`).join("")}
+          ${unresolved?`<div class="alert" style="border-left-color:var(--transit)">
+             <b>${unresolved} unnamed link${unresolved>1?"s":""}</b> on this day aren't on the map yet —
+             they're in the Places tab.</div>`:""}
+          ${vNote?`<p style="margin:.7rem 0 0;font-size:.82rem;font-style:italic;color:var(--ink-dim);">${esc(vNote)}</p>`:""}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <h3>${dayNum(day.date)} ${monShort(day.date)} · ${esc(day.city)}</h3>
+        <span class="eyebrow">${day.dow}</span>
+      </div>
+      <div class="card-b"><div class="itin">${itin}</div></div>
+    </div>
+  </div>`;
+
+  if(day.variants) $$("#routebody .vbtn").forEach(b=>b.onclick=()=>{
+    routeState.variant=b.dataset.v; renderRoute();
+  });
+
+  /* hover link between list and map */
+  const link=(i,on)=>{
+    const g=$(`#routebody .mp-g[data-i="${i}"]`), r=$(`#routebody .stop[data-i="${i}"]`);
+    if(g) g.classList.toggle("hot",on); if(r) r.classList.toggle("hot",on);
+  };
+  $$("#routebody .stop").forEach(r=>{
+    r.onmouseenter=()=>link(r.dataset.i,true); r.onmouseleave=()=>link(r.dataset.i,false);
+  });
+  $$("#routebody .mp-g").forEach(g=>{
+    g.onmouseenter=()=>link(g.dataset.i,true); g.onmouseleave=()=>link(g.dataset.i,false);
+  });
+}
+</script>
+
+<script>
+/* ============================ overview ============================ */
+function allItems(day){
+  if(!day.variants) return (day.items||[]).map(it=>({...it}));
+  return day.variants.flatMap(v=>v.items.map(it=>({...it,_v:v.label})));
+}
+const plannedDays = DAYS.filter(d=>allItems(d).length>1);
+const lockedItems = DAYS.flatMap(d=>allItems(d).filter(it=>it.t).map(it=>({...it,day:d})));
+const mappedPids  = new Set(DAYS.flatMap(d=>d.variants
+  ? d.variants.flatMap(v=>v.items.flatMap(it=>asArr(it.p)))
+  : (d.items||[]).flatMap(it=>asArr(it.p))).filter(p=>PLACES[p]));
+const unnamed = DAYS.flatMap(d=>allItems(d)
+  .filter(it=>asArr(it.u).length && !asArr(it.p).length)
+  .flatMap(it=>asArr(it.u).map(u=>({u, txt:it.txt, day:d, b:it.b}))));
+
+function renderOverview(){
+  $("#s-days").textContent = DAYS.length;
+  $("#s-days-n").textContent = "9–27 Sep 2026";
+  $("#s-planned").textContent = plannedDays.length;
+  $("#s-planned-n").textContent = (DAYS.length-plannedDays.length)+" thin or blank";
+  $("#s-locked").textContent = lockedItems.length;
+  $("#s-places").textContent = mappedPids.size;
+  $("#s-places-n").textContent = unnamed.length+" links still unnamed";
+  $("#cnt-bk").textContent = lockedItems.length;
+  $("#cnt-pl").textContent = mappedPids.size+unnamed.length;
+
+  $("#spine").innerHTML = DAYS.map(d=>{
+    const n = allItems(d).length;
+    return `<button class="spine-day ${d.cls} ${n?"":"empty"}" type="button" data-date="${d.date}">
+      <span class="dw">${d.dow.slice(0,3)}</span>
+      <span class="dd">${dayNum(d.date)}</span>
+      <span class="dc">${esc(d.city.replace(" → ","→"))}</span>
+      <span class="dn">${n?n+" items":"open"}</span>
+    </button>`;
+  }).join("");
+  $$("#spine .spine-day").forEach(b=>b.onclick=()=>{
+    routeState.date=b.dataset.date; routeState.variant=null;
+    selectTab("routes"); renderDayPick(); renderRoute();
+  });
+
+  $("#legs").innerHTML = LEGS.map(l=>`
+    <div class="leg ${l.city}">
+      <div class="rail"><i></i><b></b></div>
+      <div class="body"><h4>${esc(l.h)}</h4>
+        <div class="meta">${esc(l.m)}</div><p>${esc(l.p)}</p></div>
+    </div>`).join("");
+
+  const blanks = DAYS.filter(d=>!allItems(d).length);
+  const verify = Object.entries(PLACES).filter(([,p])=>p.v).map(([,p])=>p.n);
+  const gaps = [
+    {h:"The 16 Sep fork", p:"Picos de Europa is a big day — roughly 4 hours of driving each way — against a relaxed Bilbao/Biarritz loop. Both are costed in the Routes tab; compare them there."},
+    {h:`${blanks.length} days with nothing on them`, p:blanks.map(d=>dayNum(d.date)+" "+monShort(d.date)).join(", ")+". Paris is entirely unplanned, and so are 21–22 Sep in Bordeaux."},
+    {h:`${unnamed.length} unnamed map links`, p:"Google's short links can't be resolved from here, so these places aren't on any map or in any route yet. Name them and they fold straight into the routing."},
+    {h:"Bordeaux → Paris on the 23rd", p:"No mode chosen. The direct TGV is about 2h10; flying is slower door-to-door."},
+    {h:"Coordinates to double-check", p:verify.join(", ")+" — placed from name alone, so confirm before relying on the walking times."}
+  ];
+  $("#gaps").innerHTML = gaps.map(g=>`
+    <div class="leg"><div class="rail"><i style="background:var(--transit);box-shadow:0 0 0 1.5px var(--transit)"></i><b></b></div>
+      <div class="body"><h4>${esc(g.h)}</h4><p>${esc(g.p)}</p></div></div>`).join("");
+}
+
+/* ============================ schedule ============================ */
+let schedQuery="", schedLockOnly=false;
+function itemHTML(it){
+  const lock = !!it.t;
+  const cls = "sitem"+(lock?" is-lock":"")+(it.k==="transit"?" is-transit":"");
+  const urls = asArr(it.u);
+  const body = esc(it.txt||"");
+  const links = urls.map((u,i)=>{
+    const label = /maps\.app\.goo\.gl|share\.google/.test(u) ? "map" : "link";
+    return ` <a class="lnk" href="${u}" target="_blank" rel="noopener">${label}${urls.length>1?" "+(i+1):""} &#8599;</a>`;
+  }).join("");
+  return `<p class="${cls}">${lock?`<span class="tm">${it.t}${it._v?" · "+esc(it._v):""}</span>`:""}${
+    it._v&&!lock?`<span class="tm" style="color:var(--ink-dim)">${esc(it._v)}</span>`:""}${body}${links}</p>`;
+}
+function renderSchedule(){
+  const q=schedQuery.trim().toLowerCase();
+  const match=it=>{
+    if(schedLockOnly && !it.t) return false;
+    if(!q) return true;
+    return ((it.txt||"")+" "+asArr(it.u).join(" ")).toLowerCase().includes(q);
+  };
+  let shown=0;
+  const head = `<thead><tr><th class="corner"></th>` + DAYS.map(d=>
+    `<th class="${d.cls}"><span class="dh">
+      <span class="dw">${d.dow}</span>
+      <span class="dd">${dayNum(d.date)} ${monShort(d.date)}</span>
+      <span class="dc">${esc(d.city)}</span></span></th>`).join("") + `</tr></thead>`;
+
+  const body = BLOCKS.map(([bk,blabel])=>{
+    const cells = DAYS.map(d=>{
+      const its = allItems(d).filter(it=>it.b===bk && match(it));
+      shown += its.length;
+      return its.length
+        ? `<td>${its.map(itemHTML).join("")}</td>`
+        : `<td class="empty"></td>`;
+    }).join("");
+    return `<tr><th class="rowh">${blabel}</th>${cells}</tr>`;
+  }).join("");
+
+  const notes = `<tr><th class="rowh">Note</th>` + DAYS.map(d=>{
+    const n = d.note || d.fork || "";
+    const vn = d.variants ? d.variants.map(v=>v.label+": "+(v.note||"")).join(" ") : "";
+    const txt = [n,vn].filter(Boolean).join(" ");
+    return txt ? `<td class="notecell">${esc(txt)}</td>` : `<td class="empty"></td>`;
+  }).join("") + `</tr>`;
+
+  $("#schedtable").innerHTML = head + "<tbody>" + body + notes + "</tbody>";
+  $("#schcount").textContent = (q||schedLockOnly) ? shown+" matching items" : "";
+}
+
+/* ============================ bookings ============================ */
+function renderBookings(){
+  const rows = lockedItems.slice().sort((a,b)=>
+    a.day.date===b.day.date ? toMin(a.t)-toMin(b.t) : a.day.date.localeCompare(b.day.date));
+  $("#bklist").innerHTML = rows.map(it=>`
+    <div class="bk ${it.day.cls}">
+      <div class="bkd"><b>${dayNum(it.day.date)}</b>${monShort(it.day.date)}</div>
+      <div class="bkt">${it.t}</div>
+      <div class="bkb"><b>${esc(it.txt)}</b>
+        <div class="sub">${esc(it.day.city)}${it._v?" · "+esc(it._v):""}${
+          asArr(it.u).length?` · <a href="${asArr(it.u)[0]}" target="_blank" rel="noopener">open &#8599;</a>`:""}</div>
+      </div></div>`).join("");
+  $("#people").innerHTML = PEOPLE.map(p=>`
+    <div class="bk c-madrid">
+      <div class="bkd"><b>${p.d.split(" ")[0]}</b>${p.d.split(" ")[1]}</div>
+      <div class="bkt">${p.t}</div>
+      <div class="bkb"><b>${esc(p.w)}</b><div class="sub">${esc(p.s)}</div></div>
+    </div>`).join("");
+}
+
+/* ============================ places ============================ */
+let plQuery="";
+function renderPlaces(){
+  const q=plQuery.trim().toLowerCase();
+  const mapped = Array.from(mappedPids).map(id=>({id,...PLACES[id]}))
+    .filter(p=>!q||p.n.toLowerCase().includes(q)||p.city.toLowerCase().includes(q))
+    .sort((a,b)=>a.city.localeCompare(b.city)||a.n.localeCompare(b.n));
+  $("#pllist").innerHTML = mapped.map(p=>`
+    <div class="plc">
+      <span class="chip kind tag-${p.k}">${p.k}</span>
+      <span class="nm"><b>${esc(p.n)}</b>${p.v?` <span class="chip" style="border-color:var(--transit);color:var(--transit);font-size:.62rem">verify</span>`:""}
+        <div class="sub">${esc(p.city)} · ${fmtDur(p.d)} typical stop</div></span>
+      <span class="co">${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}</span>
+    </div>`).join("") || `<p class="sub">No matches.</p>`;
+  $("#plc-mapped").textContent = mapped.length+" places";
+
+  const un = unnamed.filter(x=>!q||(x.txt||"").toLowerCase().includes(q)||x.day.city.toLowerCase().includes(q));
+  $("#todolist").innerHTML = un.map(x=>`
+    <div class="plc todo ${x.day.cls}">
+      <span class="co">${dayNum(x.day.date)} ${monShort(x.day.date)}</span>
+      <span class="nm"><b>${esc(x.txt||"Unnamed")}</b>
+        <div class="sub">${esc(x.day.city)} · ${x.b}</div></span>
+      <a class="co" href="${x.u}" target="_blank" rel="noopener">open &#8599;</a>
+    </div>`).join("") || `<p class="sub">Nothing left to name.</p>`;
+  $("#plc-todo").textContent = un.length+" links";
+}
+
+/* ============================ tabs + theme ============================ */
+const TABS=["overview","schedule","routes","bookings","places"];
+function selectTab(name){
+  TABS.forEach(t=>{
+    const btn=$("#tab-"+t), pan=$("#p-"+t);
+    const on = t===name;
+    btn.setAttribute("aria-selected",on?"true":"false");
+    pan.hidden = !on;
+  });
+  if(name==="routes" && !routeState.date){
+    routeState.date = routableDays()[0].date;
+    renderDayPick(); renderRoute();
+  }
+  try{ localStorage.setItem("iberia.tab",name); }catch(e){}
+}
+TABS.forEach(t=>{ $("#tab-"+t).onclick=()=>selectTab(t); });
+
+$("#themetog").onclick=()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  const next = cur==="dark" ? "light" : cur==="light" ? "" : "dark";
+  if(next) document.documentElement.setAttribute("data-theme",next);
+  else document.documentElement.removeAttribute("data-theme");
+  $("#themetog").textContent = next? next : "Theme";
+  try{ localStorage.setItem("iberia.theme",next); }catch(e){}
+};
+
+$("#schq").addEventListener("input",e=>{ schedQuery=e.target.value; renderSchedule(); });
+$("#schlock").onclick=()=>{
+  schedLockOnly=!schedLockOnly;
+  $("#schlock").setAttribute("aria-pressed",schedLockOnly);
+  renderSchedule();
+};
+$("#plq").addEventListener("input",e=>{ plQuery=e.target.value; renderPlaces(); });
+
+/* boot */
+try{
+  const th=localStorage.getItem("iberia.theme");
+  if(th){ document.documentElement.setAttribute("data-theme",th); $("#themetog").textContent=th; }
+}catch(e){}
+renderOverview();
+renderSchedule();
+renderBookings();
+renderPlaces();
+renderDayPick();
+let boot="overview";
+try{ const t=localStorage.getItem("iberia.tab"); if(t&&TABS.includes(t)) boot=t; }catch(e){}
+selectTab(boot);
+</script>
