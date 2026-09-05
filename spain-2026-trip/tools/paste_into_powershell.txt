@@ -1,0 +1,82 @@
+# Paste this whole block into PowerShell. No files, no execution-policy change needed.
+[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
+Add-Type -AssemblyName System.Net.Http
+$u=@(
+  'https://maps.app.goo.gl/CF7pUQvc4ECX66ZJ8',
+  'https://maps.app.goo.gl/daw1ht7CsiucjSf37',
+  'https://maps.app.goo.gl/iqj1Si8Pf8uiMwYo9',
+  'https://maps.app.goo.gl/G5AosPdf7GmFe66Q9',
+  'https://maps.app.goo.gl/xDXjX2b5Lxp2HkT68?g_st=ac',
+  'https://maps.app.goo.gl/nACv5CKN7vbhA1iK9',
+  'https://maps.app.goo.gl/xSNbRegjZw8ZBvzUA',
+  'https://maps.app.goo.gl/r2JEFHkQNtbLoB9u8',
+  'https://maps.app.goo.gl/VhAjGH3CGMiBsKie9',
+  'https://maps.app.goo.gl/6TkQnwkXdP6kC6YSA',
+  'https://maps.app.goo.gl/cuc1qNnDCEPF42NN9',
+  'https://maps.app.goo.gl/JKHn2jjwY7yevsSJ6',
+  'https://maps.app.goo.gl/uNd1YiiYkrZ4c59X7',
+  'https://maps.app.goo.gl/M6SuvWBDiQxSf45L6',
+  'https://maps.app.goo.gl/iDWDeCVxdxSHzofi6',
+  'https://maps.app.goo.gl/BGWQjZtiY5QVMQGn6',
+  'https://maps.app.goo.gl/Z5tDwe6c3hvNx9Bn9',
+  'https://maps.app.goo.gl/PMHpoz9kPS4m8zxa8',
+  'https://maps.app.goo.gl/c5LWH8qQFsDjjomP6',
+  'https://maps.app.goo.gl/G42HhWWAP7vRWLsR8',
+  'https://maps.app.goo.gl/yJjZ5Fcyf1RYrjcN7',
+  'https://maps.app.goo.gl/Aiq48zGgszpihvLa6',
+  'https://maps.app.goo.gl/h7fzWHaPBBqZBg2A6',
+  'https://maps.app.goo.gl/6DiYwEgKt67FfwHM8',
+  'https://maps.app.goo.gl/jRwjJYV3x3EScvN59',
+  'https://maps.app.goo.gl/a96QWA1XRcj5S8wy7',
+  'https://maps.app.goo.gl/hkRTTsGq7GGYXXze9',
+  'https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77',
+  'https://maps.app.goo.gl/jd1TymUyzwB3id3j6',
+  'https://maps.app.goo.gl/DybnHXWMpX9LXJiU9',
+  'https://maps.app.goo.gl/fWkWdH1Refv2CwmGA',
+  'https://maps.app.goo.gl/Bc1HURMcrgHuVXKA7',
+  'https://maps.app.goo.gl/5FfsMMitryBxKtYz5',
+  'https://maps.app.goo.gl/2Ec2miKnuEoRjykHA',
+  'https://maps.app.goo.gl/CMqMT76zVYPX7LFDA',
+  'https://maps.app.goo.gl/xGhcc7zxvFB2ag6Z6',
+  'https://maps.app.goo.gl/vF1kQd1HCBQUPBpL9',
+  'https://maps.app.goo.gl/YsUw4BuEtHKrgpdEA',
+  'https://maps.app.goo.gl/w2zTMV6DJMbpv2yTA',
+  'https://maps.app.goo.gl/xdpQc1fyjKacpxKf6',
+  'https://maps.app.goo.gl/ywtbcPBSPeMBdKQXA',
+  'https://maps.app.goo.gl/t7fgkh29CGQNRg5z8',
+  'https://maps.app.goo.gl/xYZj3jCT4v6Bxk2d6',
+  'https://maps.app.goo.gl/kbtAdciA8Qw4hXJ88',
+  'https://maps.app.goo.gl/4Bq1NuEwSxE5tD5W6',
+  'https://maps.app.goo.gl/rPRM8vfohVCYsY4h6',
+  'https://maps.app.goo.gl/xTGBtE4mWSnrSzM18',
+  'https://maps.app.goo.gl/gpDwnR7Rp6KpfsLz6',
+  'https://share.google/mhNvyJWCkawYtPLNZ',
+  'https://maps.app.goo.gl/kqCn26ZxynPDEoz56',
+  'https://maps.app.goo.gl/aH5tnbLqMvNqnX258',
+  'https://www.menumodo.com/app.php/viewer/outlet/11926/58442?lang=en&tags=h',
+  'https://maps.app.goo.gl/tyALcBkHg7DUjdgw6',
+  'https://maps.app.goo.gl/5P2J8HJEYiJRwzQi8',
+  'https://maps.app.goo.gl/s87dhZYpMEEb3xJKA'
+)
+$h=New-Object System.Net.Http.HttpClientHandler; $h.AllowAutoRedirect=$true
+$c=New-Object System.Net.Http.HttpClient($h); $c.Timeout=[TimeSpan]::FromSeconds(25)
+$c.DefaultRequestHeaders.Add('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36')
+$I=[Globalization.CultureInfo]::InvariantCulture
+$out=foreach($s in $u){
+  try{
+    $f=$c.GetAsync($s).GetAwaiter().GetResult().RequestMessage.RequestUri.AbsoluteUri
+    $n=''; $la=''; $lo=''
+    $m=[regex]::Match($f,'/(?:place|search)/([^/@?]+)')
+    if($m.Success){$n=([uri]::UnescapeDataString($m.Groups[1].Value) -replace '\+',' ').Trim()}
+    $m=[regex]::Match($f,'!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)')
+    if(-not $m.Success){$m=[regex]::Match($f,'/@(-?\d+\.\d+),(-?\d+\.\d+)')}
+    if($m.Success){$la=[double]::Parse($m.Groups[1].Value,$I).ToString('F6',$I);$lo=[double]::Parse($m.Groups[2].Value,$I).ToString('F6',$I)}
+    "$s`t$n`t$la`t$lo"
+  }catch{ "$s`tERROR`t`t" }
+  Start-Sleep -Milliseconds 400
+}
+$out
+try{ $out | Set-Clipboard; $copied=$true }catch{ $copied=$false }
+Write-Host ''
+if($copied){Write-Host 'Done - results are also on your clipboard. Paste them into the chat.' -ForegroundColor Green}
+else{Write-Host 'Done - copy the lines above and paste them into the chat.' -ForegroundColor Green}
