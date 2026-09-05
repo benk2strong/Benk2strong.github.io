@@ -327,6 +327,17 @@ table.sched td.empty{background:repeating-linear-gradient(135deg,
 .mp-lbl-bg{fill:var(--surface);opacity:.82;}
 .mp-g.hot .mp-pin{stroke-width:3.5;}
 .mp-g.hot .mp-lbl{fill:var(--ink);font-weight:600;}
+.mp-cand{fill:var(--surface);stroke:var(--ink-dim);stroke-width:1.6;
+  stroke-dasharray:2.5 2;cursor:pointer;}
+.mp-c.hot .mp-cand{stroke:var(--city,var(--accent));stroke-width:2.6;stroke-dasharray:none;}
+.opt{display:grid;grid-template-columns:auto 1fr auto;gap:.55rem;align-items:center;
+  padding:.4rem .3rem;border-bottom:1px solid var(--border);border-radius:6px;}
+.opt:last-child{border-bottom:0;}
+.opt:hover,.opt.hot{background:var(--surface-2);}
+.opt .dot{width:.7rem;height:.7rem;border-radius:50%;border:1.6px dashed var(--ink-dim);flex:none;}
+.opt .nm b{font-size:.86rem;font-weight:600;}
+.opt .nm .sub{font-size:.73rem;color:var(--ink-dim);}
+.opt .off{font-family:var(--mono);font-size:.68rem;color:var(--ink-dim);white-space:nowrap;}
 .mp-scale{stroke:var(--ink-dim);stroke-width:1.5;}
 .mp-scale-t{font-family:var(--mono);font-size:8.5px;fill:var(--ink-dim);}
 
@@ -481,8 +492,9 @@ footer.foot{
 
   <!-- ============ ROUTES ============ -->
   <section class="panel" id="p-routes" role="tabpanel" aria-labelledby="tab-routes" hidden>
-    <p class="lede">Pick a day. The map plots every place that day whose location is known, then solves the
-      order that minimises time on your feet &mdash; while holding every reservation at its booked hour.</p>
+    <p class="lede">Pick a day. The map plots the day&rsquo;s places and solves the order that minimises time on
+      your feet, holding every reservation at its booked hour. Things your sheet words as choices are kept out
+      of the route and listed underneath as options.</p>
     <div class="daypick" id="daypick"></div>
     <div id="routebody"></div>
   </section>
@@ -505,8 +517,8 @@ footer.foot{
 
   <!-- ============ PLACES ============ -->
   <section class="panel" id="p-places" role="tabpanel" aria-labelledby="tab-places" hidden>
-    <p class="lede">Every place and link from the sheet. Named spots carry coordinates and feed the routing;
-      bare Google Maps links couldn&rsquo;t be resolved from here, so they&rsquo;re parked below for you to name.</p>
+    <p class="lede">Every place and link from the sheet. Coordinates from the resolved Google Maps links are
+      exact; the ones marked <em>verify</em> were placed from a name or street address by hand.</p>
     <div class="filters">
       <label for="plq">Filter</label>
       <input type="search" id="plq" placeholder="Search places" autocomplete="off">
@@ -520,8 +532,8 @@ footer.foot{
         <div class="card-h"><h2>Needs a name</h2><span class="eyebrow" id="plc-todo"></span></div>
         <div class="card-b">
           <p style="margin:0 0 .7rem;font-size:.82rem;color:var(--ink-mid);">
-            These are <code>maps.app.goo.gl</code> short links from the sheet. Open one, tell me what it is,
-            and I&rsquo;ll fold it into the routing.</p>
+            What&rsquo;s left after resolving the rest: one directions link (not a place), one shop that
+            returned no address, and two non-Google links.</p>
           <div id="todolist"></div>
         </div>
       </div>
@@ -594,6 +606,58 @@ const PLACES = {
   st_emilion:       {n:"Saint-Émilion",               lat:44.8938,lng:-0.1556,city:"Bordeaux",k:"sight",d:120},
   bdx_airport:      {n:"Bordeaux–Mérignac",           lat:44.8283,lng:-0.7156,city:"Bordeaux",k:"transit",d:0},
 
+  /* ---- resolved from the sheet's Google Maps links ---- */
+  osom_atelier:         {n:"Osom Atelier",lat:40.4256,lng:-3.6963,city:"Madrid",k:"shop",d:25,v:1},
+  casa_gonzalez:        {n:"Casa González & González",lat:40.426,lng:-3.6966,city:"Madrid",k:"food",d:45,v:1},
+  magpie_vintage:       {n:"Magpie Vintage",lat:40.4264,lng:-3.7033,city:"Madrid",k:"shop",d:30,v:1},
+  casino_madrid:        {n:"Casino de Madrid",lat:40.4185,lng:-3.6997,city:"Madrid",k:"sight",d:45,v:1},
+  condeduque:           {n:"Contemporánea Condeduque",lat:40.4265,lng:-3.7106,city:"Madrid",k:"sight",d:60,v:1},
+  nacha:                {n:"NACHA",lat:40.4278,lng:-3.7104,city:"Madrid",k:"food",d:90,v:1},
+  circulo:              {n:"Círculo de Bellas Artes",lat:40.418304,lng:-3.696533,city:"Madrid",k:"bar",d:60},
+  gabos:                {n:"Gabo's",lat:40.422001,lng:-3.694352,city:"Madrid",k:"bar",d:60},
+  talavera:             {n:"Antigua Casa Talavera",lat:40.420803,lng:-3.708912,city:"Madrid",k:"shop",d:25},
+  los_gabrieles:        {n:"Los Gabrieles",lat:40.415306,lng:-3.699533,city:"Madrid",k:"food",d:75},
+  prado:                {n:"Museo Nacional del Prado",lat:40.413782,lng:-3.692127,city:"Madrid",k:"sight",d:150},
+  botanico:             {n:"Real Jardín Botánico",lat:40.411106,lng:-3.691127,city:"Madrid",k:"nature",d:60},
+  cafe_central:         {n:"Café Central",lat:40.415443,lng:-3.697905,city:"Madrid",k:"bar",d:90},
+  la_castela:           {n:"La Castela",lat:40.420311,lng:-3.676642,city:"Madrid",k:"food",d:75},
+  anana:                {n:"Salinas de Añana",lat:42.815189,lng:-2.987557,city:"Route",k:"sight",d:60},
+  frias:                {n:"Frías",lat:42.762311,lng:-3.294207,city:"Route",k:"sight",d:60},
+  bar_sport:            {n:"Bar Sport",lat:43.323493,lng:-1.983711,city:"San Sebastián",k:"food",d:25},
+  la_vina:              {n:"La Viña",lat:43.324386,lng:-1.984794,city:"San Sebastián",k:"food",d:25},
+  borda_berri:          {n:"Borda Berri",lat:43.32349,lng:-1.983892,city:"San Sebastián",k:"food",d:25},
+  txakolina:            {n:"Txakolina",lat:43.324499,lng:-1.98481,city:"San Sebastián",k:"food",d:25},
+  casa_urola:           {n:"Casa Urola",lat:43.323337,lng:-1.984459,city:"San Sebastián",k:"food",d:35},
+  rekondo:              {n:"Rekondo",lat:43.313139,lng:-2.011206,city:"San Sebastián",k:"food",d:90},
+  grande_plage:         {n:"La Grande Plage, Biarritz",lat:43.487134,lng:-1.555809,city:"Basque",k:"nature",d:60},
+  ste_eugenie:          {n:"Église Sainte-Eugénie",lat:43.482842,lng:-1.564454,city:"Basque",k:"sight",d:25},
+  rocher_vierge:        {n:"Rocher de la Vierge",lat:43.484121,lng:-1.570349,city:"Basque",k:"sight",d:30},
+  bayonne_cathedral:    {n:"Cathédrale Sainte-Marie, Bayonne",lat:43.490659,lng:-1.477684,city:"Basque",k:"sight",d:40},
+  haizearen:            {n:"Haizearen Orrazia (Comb of the Wind)",lat:43.321806,lng:-2.005389,city:"San Sebastián",k:"sight",d:30},
+  txepetxa:             {n:"Bar Txepetxa",lat:43.323738,lng:-1.984058,city:"San Sebastián",k:"food",d:25},
+  kaia_kaipe:           {n:"Kaia Kaipe, Getaria",lat:43.304728,lng:-2.203414,city:"San Sebastián",k:"food",d:120},
+  chillida_leku:        {n:"Chillida-Leku",lat:43.278254,lng:-2.000704,city:"San Sebastián",k:"sight",d:120},
+  petritegi:            {n:"Petritegi Sagardotegia",lat:43.290406,lng:-1.941229,city:"San Sebastián",k:"food",d:120},
+  mercadona:            {n:"Mercadona",lat:43.278294,lng:-1.987254,city:"San Sebastián",k:"shop",d:30},
+  funicular_igueldo:    {n:"Funicular de Monte Igueldo",lat:43.319196,lng:-2.006307,city:"San Sebastián",k:"sight",d:60},
+  sagardoetxea:         {n:"Sagardoetxea cider museum",lat:43.281233,lng:-1.946967,city:"San Sebastián",k:"sight",d:60},
+  aiete:                {n:"Aieteko Jauregia",lat:43.305563,lng:-1.992007,city:"San Sebastián",k:"sight",d:45},
+  santa_klara:          {n:"Santa Klara island lighthouse",lat:43.321997,lng:-1.998277,city:"San Sebastián",k:"nature",d:90},
+  aitana:               {n:"Aitana Donostia",lat:43.317584,lng:-1.984471,city:"San Sebastián",k:"bar",d:60},
+  patio_simona:         {n:"El Patio de Simona",lat:43.321959,lng:-1.986113,city:"San Sebastián",k:"food",d:35},
+  gabarron:             {n:"Gabarrón",lat:43.317708,lng:-1.984361,city:"San Sebastián",k:"bar",d:60},
+  antonio_taberna:      {n:"Antonio Taberna",lat:43.319723,lng:-1.980628,city:"San Sebastián",k:"bar",d:60},
+  galerie_grands_hommes:{n:"La Galerie des Grands Hommes",lat:44.843118,lng:-0.577583,city:"Bordeaux",k:"shop",d:40},
+  brasserie_bordelaise: {n:"Brasserie Bordelaise",lat:44.841186,lng:-0.573047,city:"Bordeaux",k:"food",d:90},
+  notre_dame_bdx:       {n:"Église Notre-Dame de Bordeaux",lat:44.842677,lng:-0.57629,city:"Bordeaux",k:"sight",d:25},
+  books_coffee:         {n:"Books & Coffee",lat:44.836054,lng:-0.571298,city:"Bordeaux",k:"food",d:40},
+  entrecote:            {n:"L'Entrecôte",lat:44.843267,lng:-0.574277,city:"Bordeaux",k:"food",d:90},
+  chateau_pressac:      {n:"Château de Pressac",lat:44.883475,lng:-0.090158,city:"Bordeaux",k:"sight",d:90},
+  le_bis:               {n:"Le Bis by Baud et Millet",lat:44.892066,lng:-0.154728,city:"Bordeaux",k:"food",d:75},
+  jardin_botanique_bdx: {n:"Jardin Botanique de Bordeaux",lat:44.845431,lng:-0.560966,city:"Bordeaux",k:"nature",d:45},
+  musee_beaux_arts:     {n:"Musée des Beaux-Arts",lat:44.837366,lng:-0.580543,city:"Bordeaux",k:"sight",d:75},
+  darwin:               {n:"Darwin Eco-système",lat:44.849634,lng:-0.561074,city:"Bordeaux",k:"bar",d:60},
+
   /* ---- city waypoints: used to pin the start/end of a travel day, dwell 0 ---- */
   madrid_city:      {n:"Madrid",                      lat:40.4168,lng:-3.7038,city:"Madrid",k:"transit",d:0},
   sansebastian_city:{n:"San Sebastián",               lat:43.3183,lng:-1.9812,city:"San Sebastián",k:"transit",d:0},
@@ -628,23 +692,23 @@ const DAYS = [
   {b:"morning",txt:"Grace settles in to Airbnb"},
   {b:"noon",txt:"Lunch at Mercado de San Antón, or Mercado de la Paz (Casa Dani)",p:["mercado_san_anton","mercado_paz"],k:"food",alt:1},
   {b:"noon",txt:"Walk around Chueca — potential spots below",p:"chueca",k:"area"},
-  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/CF7pUQvc4ECX66ZJ8"},
-  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/daw1ht7CsiucjSf37"},
-  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/iqj1Si8Pf8uiMwYo9"},
-  {b:"noon",txt:"Chueca spot",u:"https://maps.app.goo.gl/G5AosPdf7GmFe66Q9"},
-  {b:"afternoon",txt:"Chueca spot",u:"https://maps.app.goo.gl/xDXjX2b5Lxp2HkT68?g_st=ac"},
+  {b:"noon",txt:"Osom Atelier",u:"https://maps.app.goo.gl/CF7pUQvc4ECX66ZJ8",p:"osom_atelier",cand:1},
+  {b:"noon",txt:"Fantastic Company Flagship Store (no address returned — still unplaced)",u:"https://maps.app.goo.gl/daw1ht7CsiucjSf37"},
+  {b:"noon",txt:"Casa González & González",u:"https://maps.app.goo.gl/iqj1Si8Pf8uiMwYo9",p:"casa_gonzalez",cand:1},
+  {b:"noon",txt:"Magpie Vintage",u:"https://maps.app.goo.gl/G5AosPdf7GmFe66Q9",p:"magpie_vintage",cand:1},
+  {b:"afternoon",txt:"Casino de Madrid",u:"https://maps.app.goo.gl/xDXjX2b5Lxp2HkT68?g_st=ac",p:"casino_madrid",cand:1},
   {b:"afternoon",txt:"Plaza de Cibeles — ideally go inside with tickets, up to the rooftop",p:"cibeles",k:"sight",u:"https://maps.app.goo.gl/t4vvUBcE29R7Bzat6"},
   {b:"afternoon",txt:"Walk down Gran Vía towards Liria Palace",p:"granvia",k:"area"},
   {b:"afternoon",txt:"Liria Palace",p:"liria",k:"sight",u:"https://maps.app.goo.gl/YZxmNfdsDtf5iie88"},
   {b:"evening",txt:"Tour Liria Palace in the early evening — closes 7",p:"liria",k:"sight"},
-  {b:"evening",txt:"Maybe check this out",u:"https://maps.app.goo.gl/nACv5CKN7vbhA1iK9"},
+  {b:"evening",txt:"Maybe check this out",u:"https://maps.app.goo.gl/nACv5CKN7vbhA1iK9",p:"condeduque",cand:1},
   {b:"evening",txt:"Walk around Parque del Oeste, watch sunset (sunset is late in Spain)",p:"oeste",k:"nature"},
   {b:"evening",t:"20:30",txt:"Dinner near Retiro — reservation at Casa Julián",p:"casa_julian",k:"food",u:"https://maps.app.goo.gl/aCWsfzDjiyUnVUt7A"},
-  {b:"evening",txt:"Alt: dinner near Liria Palace",u:"https://maps.app.goo.gl/xSNbRegjZw8ZBvzUA"},
-  {b:"night",txt:"Maybe rooftop bar",u:"https://maps.app.goo.gl/r2JEFHkQNtbLoB9u8"},
-  {b:"night",txt:"Or cool bar closer to the Airbnb",u:"https://maps.app.goo.gl/VhAjGH3CGMiBsKie9"},
+  {b:"evening",txt:"Alt: dinner near Liria Palace",u:"https://maps.app.goo.gl/xSNbRegjZw8ZBvzUA",p:"nacha",cand:1},
+  {b:"night",txt:"Maybe rooftop bar",u:"https://maps.app.goo.gl/r2JEFHkQNtbLoB9u8",p:"circulo",cand:1},
+  {b:"night",txt:"Or cool bar closer to the Airbnb",u:"https://maps.app.goo.gl/VhAjGH3CGMiBsKie9",p:"gabos",cand:1},
   {b:"night",txt:"Walk to Airbnb — past the cathedral, along Calle Mayor",p:"calle_mayor",k:"area"},
-  {b:"night",txt:"Nightcap spot",u:"https://maps.app.goo.gl/6TkQnwkXdP6kC6YSA"}
+  {b:"night",txt:"Antigua Casa Talavera",u:"https://maps.app.goo.gl/6TkQnwkXdP6kC6YSA",p:"talavera",cand:1}
 ]},
 
 {date:"2026-09-13",dow:"Sunday",city:"Madrid",cls:"c-madrid",base:"Madrid",
@@ -655,17 +719,17 @@ const DAYS = [
   {b:"noon",txt:"Bocadillo for breakfast",k:"food"},
   {b:"noon",txt:"Morning walk to the cathedral and Royal Palace — tour both, then the Sabatini Gardens",p:["almudena","royal_palace","sabatini"],k:"sight"},
   {b:"noon",txt:"Nun cookies on the way there",p:"carboneras",k:"food",u:"https://maps.app.goo.gl/6LpgqqV6zxgPaJHT8"},
-  {b:"noon",txt:"Lunch on the way back",u:"https://maps.app.goo.gl/cuc1qNnDCEPF42NN9"},
+  {b:"noon",txt:"Lunch on the way back",u:"https://maps.app.goo.gl/cuc1qNnDCEPF42NN9",p:"los_gabrieles"},
   {b:"afternoon",t:"13:30",txt:"Chris and Vassilios to Madring",k:"transit"},
   {b:"afternoon",txt:"Recommendations for Grace:"},
-  {b:"afternoon",txt:"Rec for Grace",u:"https://maps.app.goo.gl/JKHn2jjwY7yevsSJ6"},
-  {b:"afternoon",txt:"Rec for Grace",u:"https://maps.app.goo.gl/uNd1YiiYkrZ4c59X7"},
-  {b:"evening",txt:"Rec for Grace",u:"https://maps.app.goo.gl/M6SuvWBDiQxSf45L6"},
+  {b:"afternoon",txt:"Museo del Prado",u:"https://maps.app.goo.gl/JKHn2jjwY7yevsSJ6",p:"prado",cand:1},
+  {b:"afternoon",txt:"Real Jardín Botánico",u:"https://maps.app.goo.gl/uNd1YiiYkrZ4c59X7",p:"botanico",cand:1},
+  {b:"evening",txt:"Círculo de Bellas Artes",u:"https://maps.app.goo.gl/M6SuvWBDiQxSf45L6",p:"circulo",cand:1},
   {b:"evening",t:"17:30",txt:"Chris back from Madring (5:30–6)",k:"transit"},
   {b:"evening",txt:"Meet with Grace where she is"},
   {b:"evening",txt:"Sunset / evening walk in El Buen Retiro",p:"retiro",k:"nature"},
   {b:"evening",txt:"Dinner — options",k:"food"},
-  {b:"night",txt:"Jazz bar?",u:"https://maps.app.goo.gl/iDWDeCVxdxSHzofi6"}
+  {b:"night",txt:"Jazz bar?",u:"https://maps.app.goo.gl/iDWDeCVxdxSHzofi6",p:"cafe_central",cand:1}
 ]},
 
 {date:"2026-09-14",dow:"Monday",city:"Madrid → San Sebastián",cls:"c-transit",base:"Drive day",
@@ -674,14 +738,14 @@ const DAYS = [
   {b:"morning",txt:"Leave Airbnb by 10:30/11"},
   {b:"noon",txt:"Pick up the rental car before leaving Madrid — bring bags to throw in the car",k:"transit"},
   {b:"noon",txt:"Walk around and do what we haven't done yet and want to do"},
-  {b:"noon",txt:"Brunch if we leave late",u:"https://maps.app.goo.gl/BGWQjZtiY5QVMQGn6"},
-  {b:"noon",txt:"Drive!",k:"transit",u:"https://maps.app.goo.gl/Z5tDwe6c3hvNx9Bn9"},
+  {b:"noon",txt:"Brunch if we leave late",u:"https://maps.app.goo.gl/BGWQjZtiY5QVMQGn6",p:"la_castela",cand:1},
+  {b:"noon",txt:"Drive! (directions link — not a place)",k:"transit",u:"https://maps.app.goo.gl/Z5tDwe6c3hvNx9Bn9"},
   {b:"noon",txt:"Segovia — if we make the detour",p:"segovia",k:"sight"},
   {b:"afternoon",txt:"Stop in Burgos to stretch legs and use the bathroom — optional",p:"burgos",k:"area"},
   {b:"afternoon",txt:"Check in to Hotel SanSebay — likely as late as ~10pm given the drive"},
   {b:"evening",txt:"If wanted, food after check-in near the hotel (plenty nearby)",k:"food"},
-  {b:"evening",txt:"Near-hotel option",u:"https://maps.app.goo.gl/PMHpoz9kPS4m8zxa8"},
-  {b:"evening",txt:"Near-hotel option",u:"https://maps.app.goo.gl/c5LWH8qQFsDjjomP6"}
+  {b:"noon",txt:"Detour: Salinas de Añana salt valley",u:"https://maps.app.goo.gl/PMHpoz9kPS4m8zxa8",p:"anana",cand:1},
+  {b:"noon",txt:"Detour: Frías, medieval village",u:"https://maps.app.goo.gl/c5LWH8qQFsDjjomP6",p:"frias",cand:1}
 ]},
 
 {date:"2026-09-15",dow:"Tuesday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
@@ -690,28 +754,28 @@ const DAYS = [
   {b:"morning",txt:"Rest, wake up 10:00"},
   {b:"morning",txt:"Walk near the Airbnb",p:"parte_vieja",k:"area"},
   {b:"noon",txt:"PINTXO CRAWL",k:"food"},
-  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/G42HhWWAP7vRWLsR8"},
-  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/yJjZ5Fcyf1RYrjcN7"},
-  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/Aiq48zGgszpihvLa6"},
-  {b:"noon",txt:"Pintxo stop",u:"https://maps.app.goo.gl/h7fzWHaPBBqZBg2A6"},
+  {b:"noon",txt:"Bar Sport",u:"https://maps.app.goo.gl/G42HhWWAP7vRWLsR8",p:"bar_sport"},
+  {b:"noon",txt:"La Viña",u:"https://maps.app.goo.gl/yJjZ5Fcyf1RYrjcN7",p:"la_vina"},
+  {b:"noon",txt:"Borda Berri",u:"https://maps.app.goo.gl/Aiq48zGgszpihvLa6",p:"borda_berri"},
+  {b:"noon",txt:"Txakolina",u:"https://maps.app.goo.gl/h7fzWHaPBBqZBg2A6",p:"txakolina"},
   {b:"afternoon",t:"15:00",txt:"Ganbara — reservation, end the crawl here",p:"ganbara",k:"food",u:"https://maps.app.goo.gl/GeTJVeqNnP6SsVMM7"},
   {b:"afternoon",txt:"Afterwards walk around Gros",p:"gros",k:"area"},
-  {b:"afternoon",txt:"Gros spot",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8"},
-  {b:"afternoon",txt:"Gros spot",u:"https://maps.app.goo.gl/jRwjJYV3x3EScvN59"}
+  {b:"afternoon",txt:"Casa Urola",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8",p:"casa_urola"},
+  {b:"afternoon",txt:"Rekondo",u:"https://maps.app.goo.gl/jRwjJYV3x3EScvN59",p:"rekondo",cand:1}
 ]},
 {date:"2026-09-16",dow:"Wednesday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
  from:"sansebastian_city",to:"sansebastian_city",
- note:"Day trip day — can also be left up to how we feel. Picos de Europa was considered and dropped.",
+ note:"Day trip day — can also be left up to how we feel. Picos de Europa was dropped; the saved links are all Biarritz and Bayonne, so that is the plan unless you swap to Bilbao.",
  items:[
   {b:"morning",txt:"Wake up normal, 9–10"},
   {b:"morning",txt:"Walk around the area near the Airbnb, breakfast",p:"parte_vieja",k:"area"},
-  {b:"noon",txt:"Drive to either Bilbao or Bayonne / Biarritz",k:"transit"},
-  {b:"noon",txt:"Day trip to the other cities / towns (1+ hour drive)",p:["bilbao","biarritz"],k:"area",alt:1},
+  {b:"noon",txt:"Drive to Bayonne / Biarritz",k:"transit"},
+  {b:"noon",txt:"Alternative: Bilbao instead",p:"bilbao",k:"area",cand:1},
   {b:"noon",txt:"Also can beach",k:"nature"},
-  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/a96QWA1XRcj5S8wy7"},
-  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/hkRTTsGq7GGYXXze9"},
-  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77"},
-  {b:"afternoon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/jd1TymUyzwB3id3j6"}
+  {b:"noon",txt:"La Grande Plage, Biarritz",u:"https://maps.app.goo.gl/a96QWA1XRcj5S8wy7",p:"grande_plage"},
+  {b:"noon",txt:"Église Sainte-Eugénie",u:"https://maps.app.goo.gl/hkRTTsGq7GGYXXze9",p:"ste_eugenie"},
+  {b:"noon",txt:"Rocher de la Vierge",u:"https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77",p:"rocher_vierge"},
+  {b:"afternoon",txt:"Cathédrale Sainte-Marie, Bayonne",u:"https://maps.app.goo.gl/jd1TymUyzwB3id3j6",p:"bayonne_cathedral"}
 ]},
 
 {date:"2026-09-17",dow:"Thursday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
@@ -720,23 +784,23 @@ const DAYS = [
   {b:"morning",txt:"Wake up 9–10"},
   {b:"noon",txt:"Beach?",p:"concha",k:"nature"},
   {b:"noon",txt:"Walk around Ondarreta",p:"ondarreta",k:"nature"},
-  {b:"noon",txt:"Beach-area spot",u:"https://maps.app.goo.gl/DybnHXWMpX9LXJiU9"},
-  {b:"noon",txt:"Beach-area spot",u:"https://maps.app.goo.gl/fWkWdH1Refv2CwmGA"},
-  {b:"noon",t:"13:00",txt:"Lunch — current reservation set for 1pm",k:"food",u:"https://maps.app.goo.gl/Bc1HURMcrgHuVXKA7"},
+  {b:"noon",txt:"Haizearen Orrazia",u:"https://maps.app.goo.gl/DybnHXWMpX9LXJiU9",p:"haizearen"},
+  {b:"noon",txt:"Bar Txepetxa",u:"https://maps.app.goo.gl/fWkWdH1Refv2CwmGA",p:"txepetxa",cand:1},
+  {b:"noon",t:"13:00",txt:"Lunch — current reservation set for 1pm",k:"food",u:"https://maps.app.goo.gl/Bc1HURMcrgHuVXKA7",p:"kaia_kaipe"},
   {b:"noon",txt:"Drive around the close area",k:"transit"},
-  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/5FfsMMitryBxKtYz5"},
-  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/2Ec2miKnuEoRjykHA"},
-  {b:"afternoon",txt:"Spanish supermarket lol",u:"https://maps.app.goo.gl/CMqMT76zVYPX7LFDA"},
-  {b:"afternoon",txt:"Afternoon spot",u:"https://maps.app.goo.gl/xGhcc7zxvFB2ag6Z6"},
-  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/vF1kQd1HCBQUPBpL9"},
-  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/YsUw4BuEtHKrgpdEA"},
-  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/w2zTMV6DJMbpv2yTA"},
+  {b:"afternoon",txt:"Chillida-Leku",u:"https://maps.app.goo.gl/5FfsMMitryBxKtYz5",p:"chillida_leku",cand:1},
+  {b:"afternoon",txt:"Petritegi cider house",u:"https://maps.app.goo.gl/2Ec2miKnuEoRjykHA",p:"petritegi",cand:1},
+  {b:"afternoon",txt:"Spanish supermarket lol",u:"https://maps.app.goo.gl/CMqMT76zVYPX7LFDA",p:"mercadona",cand:1},
+  {b:"afternoon",txt:"Funicular de Monte Igueldo",u:"https://maps.app.goo.gl/xGhcc7zxvFB2ag6Z6",p:"funicular_igueldo"},
+  {b:"evening",txt:"Sagardoetxea cider museum",u:"https://maps.app.goo.gl/vF1kQd1HCBQUPBpL9",p:"sagardoetxea",cand:1},
+  {b:"evening",txt:"Aieteko Jauregia",u:"https://maps.app.goo.gl/YsUw4BuEtHKrgpdEA",p:"aiete",cand:1},
+  {b:"evening",txt:"Santa Klara lighthouse",u:"https://maps.app.goo.gl/w2zTMV6DJMbpv2yTA",p:"santa_klara",cand:1},
   {b:"evening",txt:"Dinner: more pintxos",p:"parte_vieja",k:"food"},
-  {b:"evening",txt:"Pintxo spot",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8"},
-  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/xdpQc1fyjKacpxKf6"},
-  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/ywtbcPBSPeMBdKQXA"},
-  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/t7fgkh29CGQNRg5z8"},
-  {b:"night",txt:"Night spot",u:"https://maps.app.goo.gl/xYZj3jCT4v6Bxk2d6"}
+  {b:"evening",txt:"Pintxo spot",u:"https://maps.app.goo.gl/6DiYwEgKt67FfwHM8",p:"casa_urola"},
+  {b:"night",txt:"Aitana Donostia",u:"https://maps.app.goo.gl/xdpQc1fyjKacpxKf6",p:"aitana",cand:1},
+  {b:"night",txt:"El Patio de Simona",u:"https://maps.app.goo.gl/ywtbcPBSPeMBdKQXA",p:"patio_simona",cand:1},
+  {b:"night",txt:"Gabarrón",u:"https://maps.app.goo.gl/t7fgkh29CGQNRg5z8",p:"gabarron",cand:1},
+  {b:"night",txt:"Antonio Taberna",u:"https://maps.app.goo.gl/xYZj3jCT4v6Bxk2d6",p:"antonio_taberna",cand:1}
 ]},
 
 {date:"2026-09-18",dow:"Friday",city:"San Sebastián → Bordeaux",cls:"c-transit",base:"Train day",
@@ -749,18 +813,18 @@ const DAYS = [
   {b:"noon",txt:"Settle in to the Airbnb"},
   {b:"noon",txt:"L'Alchimiste Café Boutique",p:"alchimiste",k:"food"},
   {b:"noon",txt:"La Cité du Vin — ticket is good for entry at any time",p:"cite_du_vin",k:"sight",u:"https://maps.app.goo.gl/YuSrTb7tuG44e7Nu5"},
-  {b:"noon",txt:"Walk around — small pretty mall!",u:"https://maps.app.goo.gl/kbtAdciA8Qw4hXJ88"},
+  {b:"noon",txt:"Walk around — small pretty mall!",u:"https://maps.app.goo.gl/kbtAdciA8Qw4hXJ88",p:"galerie_grands_hommes",cand:1},
   {b:"noon",txt:"Grab a bite — a late heavy lunch, or wait until dinner",k:"food"},
-  {b:"afternoon",txt:"Lunch option",u:"https://maps.app.goo.gl/4Bq1NuEwSxE5tD5W6"},
+  {b:"afternoon",txt:"Lunch option",u:"https://maps.app.goo.gl/4Bq1NuEwSxE5tD5W6",p:"brasserie_bordelaise",cand:1},
   {b:"afternoon",txt:"Basilique Saint-Michel",p:"st_michel",k:"sight"},
   {b:"afternoon",txt:"Place du Parlement",p:"parlement",k:"area"},
   {b:"evening",txt:"Place de la Bourse",p:"bourse",k:"sight"},
   {b:"evening",txt:"Place des Quinconces",p:"quinconces",k:"area"},
-  {b:"evening",txt:"Evening spot",u:"https://maps.app.goo.gl/rPRM8vfohVCYsY4h6"},
+  {b:"evening",txt:"Église Notre-Dame",u:"https://maps.app.goo.gl/rPRM8vfohVCYsY4h6",p:"notre_dame_bdx",cand:1},
   {b:"evening",txt:"Head back towards the Airbnb, walk around"},
-  {b:"evening",txt:"Chill cafe",u:"https://maps.app.goo.gl/xTGBtE4mWSnrSzM18"},
+  {b:"evening",txt:"Chill cafe",u:"https://maps.app.goo.gl/xTGBtE4mWSnrSzM18",p:"books_coffee",cand:1},
   {b:"night",txt:"Walk more around old Bordeaux"},
-  {b:"night",txt:"Late dinner after the opera, if wanted",u:"https://maps.app.goo.gl/gpDwnR7Rp6KpfsLz6"},
+  {b:"night",txt:"Late dinner after the opera, if wanted",u:"https://maps.app.goo.gl/gpDwnR7Rp6KpfsLz6",p:"entrecote",cand:1},
   {b:"night",txt:"Very famous wine bar",u:"https://share.google/mhNvyJWCkawYtPLNZ"}
 ]},
 
@@ -772,18 +836,18 @@ const DAYS = [
   {b:"morning",txt:"Breakfast at the market, or lunch depending on the vibe — closes 2:30pm",p:"capucins",k:"food",u:"https://share.google/iffxnTvimkBZruJPm"},
   {b:"noon",txt:"Pick up the rental car",k:"transit"},
   {b:"noon",txt:"Drive to Saint-Émilion",p:"st_emilion",k:"sight",u:"https://maps.app.goo.gl/7RzS9JsXUZwYTrGRA"},
-  {b:"noon",txt:"Saint-Émilion spot",u:"https://maps.app.goo.gl/kqCn26ZxynPDEoz56"},
-  {b:"noon",txt:"Lunch here!",u:"https://maps.app.goo.gl/aH5tnbLqMvNqnX258"},
+  {b:"noon",txt:"Château de Pressac",u:"https://maps.app.goo.gl/kqCn26ZxynPDEoz56",p:"chateau_pressac"},
+  {b:"noon",txt:"Lunch here!",u:"https://maps.app.goo.gl/aH5tnbLqMvNqnX258",p:"le_bis"},
   {b:"noon",txt:"Or lunch here",u:"https://www.menumodo.com/app.php/viewer/outlet/11926/58442?lang=en&tags=h"},
   {b:"noon",t:"14:30",txt:"Vineyard tour",p:"st_emilion",k:"sight",u:"https://maps.app.goo.gl/rXw4ThnxLmr5wsQG9"},
   {b:"afternoon",txt:"Drive back to Bordeaux",k:"transit"},
   {b:"afternoon",txt:"Depending on time, walk around"},
-  {b:"afternoon",txt:"Bordeaux spot",u:"https://maps.app.goo.gl/tyALcBkHg7DUjdgw6"},
-  {b:"afternoon",txt:"Bordeaux spot",u:"https://maps.app.goo.gl/5P2J8HJEYiJRwzQi8"},
+  {b:"afternoon",txt:"Jardin Botanique",u:"https://maps.app.goo.gl/tyALcBkHg7DUjdgw6",p:"jardin_botanique_bdx",cand:1},
+  {b:"afternoon",txt:"Musée des Beaux-Arts",u:"https://maps.app.goo.gl/5P2J8HJEYiJRwzQi8",p:"musee_beaux_arts",cand:1},
   {b:"evening",txt:"Walk around more, see sights not seen the previous day"},
   {b:"evening",t:"20:00",txt:"Dinner: Zéphirine — reservation for 8pm",p:"zephirine",k:"food",u:"https://zephirine.fr/restaurant-epicerie-fine-bordeaux-2/"},
   {b:"evening",txt:"After-dinner bar",k:"bar"},
-  {b:"night",txt:"Traditional outside seating + music, several in this area",u:"https://maps.app.goo.gl/s87dhZYpMEEb3xJKA"}
+  {b:"night",txt:"Traditional outside seating + music, several in this area",u:"https://maps.app.goo.gl/s87dhZYpMEEb3xJKA",p:"darwin",cand:1}
 ]},
 
 {date:"2026-09-20",dow:"Sunday",city:"Bordeaux",cls:"c-bordeaux",base:"Bordeaux",items:[
@@ -873,7 +937,7 @@ function dayItems(day,variant){
   }
   return day.items||[];
 }
-function dayStops(day,variant){
+function dayStops(day,variant,wantCand){
   const out=[], seen=new Map();
   let ord=0;
   const push=(pid,o)=>{
@@ -885,12 +949,16 @@ function dayStops(day,variant){
     return s;
   };
   const vcfg = day.variants ? (day.variants.find(x=>x.id===variant)||day.variants[0]) : null;
-  const FROM = (vcfg&&vcfg.from) || day.from, TO = (vcfg&&vcfg.to) || day.to;
+  const FROM = wantCand ? null : ((vcfg&&vcfg.from) || day.from);
+  const TO   = wantCand ? null : ((vcfg&&vcfg.to)   || day.to);
   if(FROM) push(FROM,{key:FROM+"#start",label:"Start",pin:"start",dwell:0,order:-1});
 
   dayItems(day,variant).forEach((it,idx)=>{
     const pids = asArr(it.p).filter(p=>PLACES[p]);
     if(!pids.length) return;
+    /* Items the sheet itself words as options ("maybe", "or", "potential spots
+       below") are candidates: mapped and listed, but never forced into the route. */
+    if(!!it.cand !== !!wantCand) return;
     /* "or" items contribute one stop; the rest are recorded as alternatives */
     const use = it.alt ? pids.slice(0,1) : pids;
     const alts = it.alt ? pids.slice(1).map(p=>PLACES[p].n) : null;
@@ -931,7 +999,15 @@ function solveDay(day,variant){
     seq = optimize(stops,start);
     plan = buildPlan(seq,start);
   }
-  return {stops, seq, plan, start};
+  const cands = dayStops(day,variant,true).map(c=>{
+    let best=Infinity, near=null;
+    seq.forEach(r=>{
+      const km = hav(PLACES[c.pid],PLACES[r.pid]);
+      if(km<best){ best=km; near=r; }
+    });
+    return {...c, offRoute: seq.length?best:null, nearest: near};
+  }).sort((a,b)=>(a.offRoute??1e9)-(b.offRoute??1e9));
+  return {stops, seq, plan, start, cands};
 }
 
 /* --------- ordering: anchors pinned, cheapest insertion, then 2-opt --------- */
@@ -1065,9 +1141,10 @@ function projector(pts){
   return fn;
 }
 
-function renderMap(seq, listed){
+function renderMap(seq, listed, cands){
   if(!seq.length) return "";
-  const pts = seq.map(s=>PLACES[s.pid]);
+  cands = cands||[];
+  const pts = seq.map(s=>PLACES[s.pid]).concat(cands.map(c=>PLACES[c.pid]));
   const pr  = projector(pts);
   const P   = seq.map(s=>pr(PLACES[s.pid]));
 
@@ -1121,10 +1198,18 @@ function renderMap(seq, listed){
       + `</g>`;
   }).join("");
 
+  const cpins = cands.map((c,i)=>{
+    const p = pr(PLACES[c.pid]);
+    return `<g class="mp-c" data-c="${i}">`
+      + `<circle class="mp-cand" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5">`
+      + `<title>${esc(PLACES[c.pid].n)} — option, not in the route</title></circle></g>`;
+  }).join("");
+
   return `<svg viewBox="0 0 ${MAP_W} ${MAP_H}" role="img" aria-label="Route map for the selected day">
     ${g}
     <path class="mp-route ghost" d="${gline}"/>
     <path class="mp-route" d="${dline}"/>
+    ${cpins}
     ${pins}
     <g transform="translate(${MAP_PAD-16},${MAP_H-18})">
       <line class="mp-scale" x1="0" y1="0" x2="${barPx.toFixed(1)}" y2="0"/>
@@ -1174,7 +1259,7 @@ function renderRoute(){
   }
 
   const solved = solveDay(day, routeState.variant);
-  const stops = solved.stops, seq = solved.seq, plan = solved.plan;
+  const stops = solved.stops, seq = solved.seq, plan = solved.plan, cands = solved.cands;
   const listed = stops.slice().sort((a,b)=>a.order-b.order);
   const listedPlan = buildPlan(listed, solved.start);
   const savedKm  = listedPlan.tot.km - plan.tot.km;
@@ -1210,10 +1295,11 @@ function renderRoute(){
   <div class="routelayout ${day.cls}">
     <div>
       <div class="mapbox ${day.cls}">
-        ${renderMap(seq, listed)}
+        ${renderMap(seq, listed, cands)}
         <div class="maphint">
-          <span>Solid line — suggested order &nbsp;·&nbsp; Dashed — the order you listed</span>
-          <span>${plan.rows.length} stops</span>
+          <span>Solid — suggested order &nbsp;·&nbsp; Faint dashes — your listed order
+            ${cands.length?"&nbsp;·&nbsp; Hollow pins — options":""}</span>
+          <span>${plan.rows.length} stops${cands.length?" + "+cands.length+" options":""}</span>
         </div>
       </div>
       <div class="card" style="margin-top:1rem;">
@@ -1254,6 +1340,25 @@ function renderRoute(){
       </div>
       <div class="card-b"><div class="itin">${itin}</div></div>
     </div>
+
+    ${cands.length?`<div class="card" style="grid-column:1/-1">
+      <div class="card-h"><h3>Options you listed but didn't commit to</h3>
+        <span class="eyebrow">${cands.length} nearby &middot; not in the route</span></div>
+      <div class="card-b">
+        <p style="margin:0 0 .6rem;font-size:.82rem;color:var(--ink-mid);">
+          Your sheet words these as choices &mdash; &ldquo;maybe&rdquo;, &ldquo;or&rdquo;,
+          &ldquo;potential spots below&rdquo; &mdash; so they're mapped as hollow pins and kept out of
+          the timing. Distance is from the nearest stop on the route.</p>
+        <div class="grid g2">${cands.map((c,i)=>{
+          const pl=PLACES[c.pid];
+          return `<div class="opt" data-c="${i}">
+            <span class="dot"></span>
+            <span class="nm"><b>${c.url?`<a href="${c.url}" target="_blank" rel="noopener">${esc(pl.n)}</a>`:esc(pl.n)}</b>
+              <div class="sub">${esc(pl.k)} &middot; ${fmtDur(c.dwell)}${
+                c.nearest?" &middot; near "+esc(PLACES[c.nearest.pid].n):""}</div></span>
+            <span class="off">${c.offRoute!=null?(c.offRoute<1?Math.round(c.offRoute*1000)+" m":c.offRoute.toFixed(1)+" km"):""}</span>
+          </div>`;}).join("")}</div>
+      </div></div>`:""}
   </div>`;
 
   if(day.variants) $$("#routebody .vbtn").forEach(b=>b.onclick=()=>{
@@ -1270,6 +1375,16 @@ function renderRoute(){
   });
   $$("#routebody .mp-g").forEach(g=>{
     g.onmouseenter=()=>link(g.dataset.i,true); g.onmouseleave=()=>link(g.dataset.i,false);
+  });
+  const clink=(i,on)=>{
+    const g=$(`#routebody .mp-c[data-c="${i}"]`), r=$(`#routebody .opt[data-c="${i}"]`);
+    if(g) g.classList.toggle("hot",on); if(r) r.classList.toggle("hot",on);
+  };
+  $$("#routebody .opt").forEach(r=>{
+    r.onmouseenter=()=>clink(r.dataset.c,true); r.onmouseleave=()=>clink(r.dataset.c,false);
+  });
+  $$("#routebody .mp-c").forEach(g=>{
+    g.onmouseenter=()=>clink(g.dataset.c,true); g.onmouseleave=()=>clink(g.dataset.c,false);
   });
 }
 </script>
@@ -1296,7 +1411,7 @@ function renderOverview(){
   $("#s-planned-n").textContent = (DAYS.length-plannedDays.length)+" thin or blank";
   $("#s-locked").textContent = lockedItems.length;
   $("#s-places").textContent = mappedPids.size;
-  $("#s-places-n").textContent = unnamed.length+" links still unnamed";
+  $("#s-places-n").textContent = unnamed.length+" links still unplaced";
   $("#cnt-bk").textContent = lockedItems.length;
   $("#cnt-pl").textContent = mappedPids.size+unnamed.length;
 
@@ -1326,7 +1441,7 @@ function renderOverview(){
   const gaps = [
     {h:"16 Sep is still loose", p:"Picos de Europa is off. The day is a Bilbao or Bayonne/Biarritz drive, but which one isn't settled — and four of its links are unnamed, so the route is thin."},
     {h:`${blanks.length} days with nothing on them`, p:blanks.map(d=>dayNum(d.date)+" "+monShort(d.date)).join(", ")+". Paris is entirely unplanned, and so are 21–22 Sep in Bordeaux."},
-    {h:`${unnamed.length} unnamed map links`, p:"Google's short links can't be resolved from here, so these places aren't on any map or in any route yet. Name them and they fold straight into the routing."},
+    {h:`${unnamed.length} links still unplaced`, p:"The rest of the sheet's Google Maps links were resolved and are now on the map. These four are the leftovers: a directions link rather than a place, a shop whose address didn't come back, and two non-Google links."},
     {h:"Bordeaux → Paris on the 23rd", p:"No mode chosen. The direct TGV is about 2h10; flying is slower door-to-door."},
     {h:"Coordinates to double-check", p:verify.join(", ")+" — placed from name alone, so confirm before relying on the walking times."}
   ];
