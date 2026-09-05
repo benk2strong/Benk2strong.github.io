@@ -13,8 +13,7 @@ Built from `Spain_Trip_Itinerary_.xlsx` (Sheet2). Sep 9–27, 2026:
 - **Schedule** — the spreadsheet's own shape (days across, time of day down),
   with reservations pulled out and every link clickable. Filterable.
 - **Routes & Map** — pick a day; it plots the located places and solves the
-  visiting order. Includes the 16 Sep fork (Picos de Europa vs Bilbao/Biarritz)
-  as two costed alternatives.
+  visiting order, and reports the result against the order in the sheet.
 - **Locked In** — everything with a time attached, in date order.
 - **Places** — the geocoded inventory, plus the links still needing names.
 
@@ -54,9 +53,11 @@ always visible and checkable.
 - **Coordinates are hand-entered** from place names, not geocoded. Good enough
   to order a day; not good enough to navigate by. Places flagged `verify`
   in the Places tab are the least certain.
-- **65 `maps.app.goo.gl` links are unresolved.** Google's short links are
-  blocked from the environment this was built in, so those places aren't on
-  any map or in any route. They're listed under Places → *Needs a name*.
+- **56 `maps.app.goo.gl` links are unresolved.** The environment this was
+  built in has no general outbound internet access, so the short links could
+  not be followed and those places aren't on any map or in any route. They're
+  listed under Places → *Needs a name*. Every coordinate in `PLACES` came from
+  a place *name* typed in the spreadsheet, not from following a link.
 - **Travel times are modelled, not live** — straight-line distance with a
   detour factor and a flat speed. No traffic, no transit schedules.
 
@@ -68,8 +69,10 @@ Everything renders from two objects at the top of the script in `index.html`:
   opening hours and `v:1` to flag a coordinate as unverified.
 - `DAYS` — one entry per date, each with `items[]`. An item is
   `{b:block, t:"HH:MM", txt, u:url(s), p:place id(s), k:kind}`.
-  `alt:1` marks an either/or. A day may carry `from`/`to` to pin its endpoints,
-  or `variants[]` for a fork like 16 Sep.
+  `alt:1` marks an either/or. A day may carry `from`/`to` to pin its endpoints.
+  A day may also carry `variants[]` to model a fork — two competing plans shown
+  as a toggle. Nothing uses it right now (the 16 Sep Picos/Biarritz fork was
+  resolved in favour of Biarritz), but the machinery is still there.
 
 Naming an unresolved link is a two-line change: add the place to `PLACES`,
 then put its `p:` on the matching item.

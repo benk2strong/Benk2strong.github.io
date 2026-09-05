@@ -441,7 +441,7 @@ footer.foot{
   <!-- ============ OVERVIEW ============ -->
   <section class="panel" id="p-overview" role="tabpanel" aria-labelledby="tab-overview">
     <p class="lede">Everything from the planning sheet, reorganised. Nineteen days, four home bases,
-      two countries and one unresolved fork on 16 Sep. Click any day in the spine to jump to its route.</p>
+      two countries, four home bases. Click any day in the spine to jump to its route.</p>
 
     <div class="grid g4" style="margin-bottom:1.25rem;">
       <div class="stat"><span class="v" id="s-days">–</span><span class="k">Days on the ground</span><span class="n" id="s-days-n"></span></div>
@@ -576,9 +576,6 @@ const PLACES = {
   amara:            {n:"Amara — Euskotren",           lat:43.3128,lng:-1.9787,city:"San Sebastián",k:"transit",d:0},
 
   /* ---- day trips from San Sebastián ---- */
-  fuente_de:        {n:"Teleférico de Fuente Dé",     lat:43.1470,lng:-4.8120,city:"Picos",k:"nature",d:150},
-  potes:            {n:"Potes",                       lat:43.1540,lng:-4.6230,city:"Picos",k:"area",  d:60},
-  santander:        {n:"Santander",                   lat:43.4623,lng:-3.8100,city:"Picos",k:"area",  d:90},
   bilbao:           {n:"Bilbao",                      lat:43.2630,lng:-2.9350,city:"Basque",k:"area", d:120},
   guggenheim:       {n:"Guggenheim Bilbao",           lat:43.2687,lng:-2.9340,city:"Basque",k:"sight",d:120},
   biarritz:         {n:"Biarritz",                    lat:43.4832,lng:-1.5586,city:"Basque",k:"area", d:120},
@@ -612,7 +609,6 @@ PLACES.capucins.o    = ["07:00","14:30"];   /* market closes 2:30pm — from the
 PLACES.liria.o       = ["10:00","19:00"];   /* "closes 7" — from the sheet */
 PLACES.royal_palace.o= ["10:00","18:00"];
 PLACES.cite_du_vin.o = ["10:00","18:30"];
-PLACES.fuente_de.o   = ["09:00","18:00"];
 PLACES.almudena.o    = ["10:00","20:00"];
 
 const DAYS = [
@@ -704,41 +700,19 @@ const DAYS = [
   {b:"afternoon",txt:"Gros spot",u:"https://maps.app.goo.gl/jRwjJYV3x3EScvN59"}
 ]},
 {date:"2026-09-16",dow:"Wednesday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
- fork:"Two competing plans for this day — pick one.",
- variants:[
-  {id:"picos",label:"Picos de Europa",note:"Further routing necessary. Long day: ~4h drive each way.",
-   from:"sansebastian_city",to:"sansebastian_city",items:[
-    {b:"morning",t:"07:00",txt:"Wake up early",k:"transit"},
-    {b:"morning",txt:"Drive to Picos de Europa",k:"transit"},
-    {b:"noon",t:"11:00",txt:"Arrive Picos de Europa",p:"fuente_de",k:"nature"},
-    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/ZBZoKwbm7UDsVLc67"},
-    {b:"noon",txt:"Early food?",u:"https://maps.app.goo.gl/kYgcTNBJjhaTRtWNA"},
-    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/7WkvEqiZVT5Do58Y7"},
-    {b:"noon",txt:"Picos spot",u:"https://maps.app.goo.gl/9u97oTUhhuu55CbbA"},
-    {b:"noon",txt:"Teleférico de Fuente Dé (Camaleño)",p:"fuente_de",k:"nature",u:"https://www.tripadvisor.com/Attraction_Review-g1370252-d10489255-Reviews-Teleferico-Camaleno_Cantabria.html"},
-    {b:"afternoon",txt:"Potes and around",p:"potes",k:"area"},
-    {b:"afternoon",txt:"Picos spot",u:"https://maps.app.goo.gl/YDSuAYq5aBNJgaZU8"},
-    {b:"afternoon",txt:"Picos spot",u:"https://maps.app.goo.gl/BNNqJxQD3VLNKG3k7"},
-    {b:"afternoon",txt:"Ten best things to see in Picos de Europa",u:"https://www.turismoasturias.es/en/-/blogs/las-10-mejores-cosas-que-ver-y-hacer-en-la-comarca-de-picos-de-europa"},
-    {b:"afternoon",txt:"Drive back from Picos",k:"transit"},
-    {b:"evening",txt:"Santander spot",u:"https://maps.app.goo.gl/GT7ThcH8mvVuQEZc7"},
-    {b:"evening",txt:"Santander spot",u:"https://maps.app.goo.gl/g8pxev4XyK7jUekb9"},
-    {b:"evening",txt:"Stop in Santander for dinner + walk around",p:"santander",k:"food"},
-    {b:"evening",txt:"Drive back to San Sebastián",k:"transit"}
-  ]},
-  {id:"basque",label:"Bilbao / Biarritz",note:"Day trip day — can also be left up to how we feel.",
-   from:"sansebastian_city",to:"sansebastian_city",items:[
-    {b:"morning",txt:"Wake up normal, 9–10"},
-    {b:"morning",txt:"Walk around the area near the Airbnb, breakfast",p:"parte_vieja",k:"area"},
-    {b:"noon",txt:"Drive to either Bilbao or Bayonne / Biarritz",k:"transit"},
-    {b:"noon",txt:"Day trip to the other cities / towns (1+ hour drive)",p:["bilbao","biarritz"],k:"area",alt:1},
-    {b:"noon",txt:"Also can beach",k:"nature"},
-    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/a96QWA1XRcj5S8wy7"},
-    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/hkRTTsGq7GGYXXze9"},
-    {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77"},
-    {b:"afternoon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/jd1TymUyzwB3id3j6"}
-  ]}
- ],items:[]},
+ from:"sansebastian_city",to:"sansebastian_city",
+ note:"Day trip day — can also be left up to how we feel. Picos de Europa was considered and dropped.",
+ items:[
+  {b:"morning",txt:"Wake up normal, 9–10"},
+  {b:"morning",txt:"Walk around the area near the Airbnb, breakfast",p:"parte_vieja",k:"area"},
+  {b:"noon",txt:"Drive to either Bilbao or Bayonne / Biarritz",k:"transit"},
+  {b:"noon",txt:"Day trip to the other cities / towns (1+ hour drive)",p:["bilbao","biarritz"],k:"area",alt:1},
+  {b:"noon",txt:"Also can beach",k:"nature"},
+  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/a96QWA1XRcj5S8wy7"},
+  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/hkRTTsGq7GGYXXze9"},
+  {b:"noon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/EDgj6c4g1SyQJ5m77"},
+  {b:"afternoon",txt:"Day-trip spot",u:"https://maps.app.goo.gl/jd1TymUyzwB3id3j6"}
+]},
 
 {date:"2026-09-17",dow:"Thursday",city:"San Sebastián",cls:"c-sansebastian",base:"San Sebastián",
  note:"Probably a more relaxed catch-all type day.",
@@ -831,7 +805,7 @@ const LEGS = [
   {city:"c-transit",     h:"JFK → Madrid",              m:"9 – 10 Sep · overnight flight", p:"Depart 20:40, land 10:15."},
   {city:"c-madrid",      h:"Madrid",                    m:"10 – 14 Sep · 4 nights",        p:"Grace joins on the 12th. Two fully-planned days, two still open."},
   {city:"c-transit",     h:"Madrid → San Sebastián",    m:"14 Sep · rental car",           p:"Long drive, optional stops in Segovia and Burgos. Check-in could be as late as 10pm."},
-  {city:"c-sansebastian",h:"San Sebastián",             m:"14 – 18 Sep · 4 nights",        p:"Pintxo crawl, a beach day, and one day still torn between Picos de Europa and Bilbao/Biarritz."},
+  {city:"c-sansebastian",h:"San Sebastián",             m:"14 – 18 Sep · 4 nights",        p:"Pintxo crawl, a beach day, and a Bilbao/Biarritz day trip on the 16th."},
   {city:"c-transit",     h:"San Sebastián → Bordeaux",  m:"18 Sep · train via Hendaye",    p:"Local train to Hendaye, then TER to Bordeaux. No advance ticket needed."},
   {city:"c-bordeaux",    h:"Bordeaux",                  m:"18 – 23 Sep · 5 nights",        p:"Saint-Émilion and the vineyards on the 19th. Grace flies out on the 20th. Three days still blank."},
   {city:"c-transit",     h:"Bordeaux → Paris",          m:"23 Sep",                        p:"Mode not decided yet — TGV is roughly 2h10."},
@@ -1350,7 +1324,7 @@ function renderOverview(){
   const blanks = DAYS.filter(d=>!allItems(d).length);
   const verify = Object.entries(PLACES).filter(([,p])=>p.v).map(([,p])=>p.n);
   const gaps = [
-    {h:"The 16 Sep fork", p:"Picos de Europa is a big day — roughly 4 hours of driving each way — against a relaxed Bilbao/Biarritz loop. Both are costed in the Routes tab; compare them there."},
+    {h:"16 Sep is still loose", p:"Picos de Europa is off. The day is a Bilbao or Bayonne/Biarritz drive, but which one isn't settled — and four of its links are unnamed, so the route is thin."},
     {h:`${blanks.length} days with nothing on them`, p:blanks.map(d=>dayNum(d.date)+" "+monShort(d.date)).join(", ")+". Paris is entirely unplanned, and so are 21–22 Sep in Bordeaux."},
     {h:`${unnamed.length} unnamed map links`, p:"Google's short links can't be resolved from here, so these places aren't on any map or in any route yet. Name them and they fold straight into the routing."},
     {h:"Bordeaux → Paris on the 23rd", p:"No mode chosen. The direct TGV is about 2h10; flying is slower door-to-door."},
