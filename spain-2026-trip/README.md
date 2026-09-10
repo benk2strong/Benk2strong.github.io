@@ -29,6 +29,32 @@ drawn on the map as hollow pins, and listed under the route with their distance
 from the nearest committed stop — but they never enter the schedule or the
 distance total. Flipping one into the route is a one-word change.
 
+## The map: street tiles, with a diagram fallback
+
+The Routes tab draws a real slippy map — [Leaflet](https://leafletjs.com) with
+[CARTO](https://carto.com/attributions) basemaps built on OpenStreetMap data.
+Both are free and need no API key or account.
+
+Two environments can't show tiles, so the page detects that and falls back to
+the self-contained SVG diagram:
+
+| Where | What you get |
+|---|---|
+| GitHub Pages, or the file opened locally with a connection | Street map, with a Street/Diagram toggle |
+| Published Artifact | Diagram — its CSP blocks the Leaflet stylesheet and all tile images |
+| Offline | Diagram |
+
+Detection is in three parts, because the failures differ. If `L` is undefined
+the script was blocked. If the script loaded but `.leaflet-pane` doesn't compute
+to `position:absolute`, the *stylesheet* was blocked — which would otherwise
+render a broken map rather than no map. And if neither a `tileload` nor a
+`tileerror` arrives within four seconds, the tile host is unreachable. Any of
+the three drops to the diagram; the last one says so on the map.
+
+The basemap follows the page theme (`light_all` / `dark_all`) and re-tints when
+the theme toggle is used. Markers are Leaflet `divIcon`s styled with the page's
+own CSS, so the map pulls no images of its own — only tiles.
+
 ## How the routing works
 
 For each day the page builds a distance matrix over that day's located places
@@ -71,7 +97,9 @@ always visible and checkable.
   a place), one shop that returned no address, and two non-Google links.
   Coordinates still marked `verify` were placed by hand from a street address.
 - **Travel times are modelled, not live** — straight-line distance with a
-  detour factor and a flat speed. No traffic, no transit schedules.
+  detour factor and a flat speed. No traffic, no transit schedules. The street
+  map is a basemap only; the route line is drawn straight between stops rather
+  than snapped to roads.
 
 ## Editing
 

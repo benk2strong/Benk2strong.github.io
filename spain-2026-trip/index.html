@@ -1,6 +1,8 @@
 <title>Iberia Line 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
@@ -327,6 +329,26 @@ table.sched td.empty{background:repeating-linear-gradient(135deg,
 .mp-lbl-bg{fill:var(--surface);opacity:.82;}
 .mp-g.hot .mp-pin{stroke-width:3.5;}
 .mp-g.hot .mp-lbl{fill:var(--ink);font-weight:600;}
+.leafwrap{height:420px;width:100%;background:var(--surface-2);}
+.leafwrap .leaflet-container{height:100%;width:100%;background:var(--surface-2);
+  font-family:var(--body);}
+.leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.75)!important;}
+:root:not([data-theme="light"]) .leaflet-control-attribution{background:rgba(20,26,33,.7)!important;}
+:root:not([data-theme="light"]) .leaflet-control-attribution a{color:#8fd0e6!important;}
+:root[data-theme="dark"] .leaflet-control-attribution{background:rgba(20,26,33,.7)!important;}
+:root[data-theme="dark"] .leaflet-control-attribution a{color:#8fd0e6!important;}
+.lm-pin{background:none;border:0;}
+.lm-pin span{
+  display:grid;place-items:center;width:24px;height:24px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--city,var(--accent));
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink);
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
+}
+.lm-pin.lock span{background:var(--locked);border-color:var(--locked);color:#fff;}
+.mapmode{display:flex;gap:.25rem;}
+.mapmode .vbtn{padding:.2rem .6rem;font-size:.8rem;}
+.mapnote{padding:.45rem .8rem;border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-dim);}
 .mp-cand{fill:var(--surface);stroke:var(--ink-dim);stroke-width:1.6;
   stroke-dasharray:2.5 2;cursor:pointer;}
 .mp-c.hot .mp-cand{stroke:var(--city,var(--accent));stroke-width:2.6;stroke-dasharray:none;}
@@ -1220,6 +1242,86 @@ function renderMap(seq, listed, cands){
   </svg>`;
 }
 
+/* ==================== slippy map (Leaflet + CARTO/OSM) ====================
+   Free, no API key. Two things can stop it: the Artifact CSP blocks the
+   Leaflet stylesheet and all tile images, and an offline viewer has neither.
+   Both are detected and the page falls back to the SVG diagram, which needs
+   no network at all. */
+let LMAP=null, LTILES=null, TILES_DEAD=false;
+let mapMode = (()=>{ try{ return localStorage.getItem("iberia.map")||"street"; }catch(e){ return "street"; } })();
+
+function isDarkNow(){
+  const t=document.documentElement.getAttribute("data-theme");
+  if(t) return t==="dark";
+  return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function tileUrl(){
+  return "https://{s}.basemaps.cartocdn.com/"+(isDarkNow()?"dark_all":"light_all")+"/{z}/{x}/{y}{r}.png";
+}
+/* Leaflet's script can load while its stylesheet is blocked — that renders a
+   broken map rather than no map, so check the CSS actually applied. */
+function leafletUsable(){
+  if(typeof L === "undefined") return false;
+  const probe=document.createElement("div");
+  probe.className="leaflet-pane";
+  probe.style.visibility="hidden";
+  document.body.appendChild(probe);
+  const ok = getComputedStyle(probe).position === "absolute";
+  probe.remove();
+  return ok;
+}
+function destroyMap(){
+  if(LMAP){ try{ LMAP.remove(); }catch(e){} LMAP=null; LTILES=null; }
+}
+function buildLeaflet(el, seq, cands, plan){
+  const pts = seq.map(s=>[PLACES[s.pid].lat, PLACES[s.pid].lng]);
+  const map = L.map(el, {scrollWheelZoom:false, attributionControl:true});
+  LMAP = map;
+  LTILES = L.tileLayer(tileUrl(), {
+    subdomains:"abcd", maxZoom:19, crossOrigin:true,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
+
+  L.polyline(pts, {color:getComputedStyle(el).getPropertyValue("--city").trim()||"#1b7f9e",
+                   weight:3, opacity:.8}).addTo(map);
+
+  seq.forEach((st,i)=>{
+    const pl=PLACES[st.pid];
+    L.marker([pl.lat,pl.lng], {icon:L.divIcon({
+      className:"lm-pin"+(st.fixed?" lock":""), html:"<span>"+(i+1)+"</span>",
+      iconSize:[24,24], iconAnchor:[12,12]
+    })}).addTo(map).bindPopup(
+      "<b>"+esc(pl.n)+"</b><br>"+(plan.rows[i]?fmtT(plan.rows[i].arrive)+"–"+fmtT(plan.rows[i].depart):"")
+      + (st.fixed?"<br>booked "+st.fixed:""));
+  });
+
+  (cands||[]).forEach(c=>{
+    const pl=PLACES[c.pid];
+    L.circleMarker([pl.lat,pl.lng], {radius:5, color:"#8a94a0", weight:1.6,
+      dashArray:"3 2", fillColor:"#ffffff", fillOpacity:.85})
+      .addTo(map).bindPopup("<b>"+esc(pl.n)+"</b><br>option — not in the route");
+  });
+
+  map.fitBounds(L.latLngBounds(pts.concat((cands||[]).map(c=>[PLACES[c.pid].lat,PLACES[c.pid].lng]))),
+                {padding:[34,34]});
+
+  /* If no tile ever arrives, the basemap is blocked — switch to the diagram. */
+  let alive=false;
+  LTILES.on("tileload", ()=>{ alive=true; });
+  LTILES.on("tileerror", ()=>{ if(!alive) failTiles(); });
+  setTimeout(()=>{ if(!alive) failTiles(); }, 4000);
+  setTimeout(()=>{ if(LMAP===map) map.invalidateSize(); }, 60);
+}
+function failTiles(){
+  if(TILES_DEAD) return;
+  TILES_DEAD = true;
+  destroyMap();
+  renderRoute();
+}
+function retintMap(){
+  if(LMAP && LTILES) LTILES.setUrl(tileUrl());
+}
+
 /* ============================ routes tab ============================ */
 let routeState = {date:null, variant:null};
 
@@ -1250,13 +1352,7 @@ function renderRoute(){
   const host = $("#routebody");
   if(!day){ host.innerHTML=`<p class="lede">Pick a day above.</p>`; return; }
 
-  let vhtml="";
-  if(day.variants){
-    if(!routeState.variant) routeState.variant = day.variants[0].id;
-    vhtml = `<div class="variant">`+ day.variants.map(v=>
-      `<button class="vbtn" type="button" data-v="${v.id}" aria-pressed="${v.id===routeState.variant}">${esc(v.label)}</button>`
-    ).join("") + `</div>`;
-  }
+  if(day.variants && !routeState.variant) routeState.variant = day.variants[0].id;
 
   const solved = solveDay(day, routeState.variant);
   const stops = solved.stops, seq = solved.seq, plan = solved.plan, cands = solved.cands;
@@ -1264,6 +1360,20 @@ function renderRoute(){
   const listedPlan = buildPlan(listed, solved.start);
   const savedKm  = listedPlan.tot.km - plan.tot.km;
   const savedMin = listedPlan.tot.travel - plan.tot.travel;
+
+  const canStreet = !TILES_DEAD && leafletUsable();
+  const useStreet = canStreet && mapMode==="street" && seq.length>0;
+  destroyMap();
+
+  /* both toggles can be present at once, so build them separately */
+  const vhtml =
+    (day.variants ? `<div class="variant">`+ day.variants.map(v=>
+        `<button class="vbtn" type="button" data-v="${v.id}" aria-pressed="${v.id===routeState.variant}">${esc(v.label)}</button>`
+      ).join("") + `</div>` : "")
+    + (canStreet ? `<div class="variant mapmode">
+        <button class="vbtn" type="button" data-m="street"  aria-pressed="${mapMode==="street"}">Street map</button>
+        <button class="vbtn" type="button" data-m="diagram" aria-pressed="${mapMode!=="street"}">Diagram</button>
+      </div>` : "");
 
   const unresolved = dayItems(day,routeState.variant).filter(it=>asArr(it.u).length && !asArr(it.p).length).length;
   const vNote = day.variants ? (day.variants.find(v=>v.id===routeState.variant)||{}).note : day.note;
@@ -1295,12 +1405,18 @@ function renderRoute(){
   <div class="routelayout ${day.cls}">
     <div>
       <div class="mapbox ${day.cls}">
-        ${renderMap(seq, listed, cands)}
+        ${useStreet
+          ? `<div class="leafwrap ${day.cls}" id="leafmap"></div>`
+          : renderMap(seq, listed, cands)}
         <div class="maphint">
-          <span>Solid — suggested order &nbsp;·&nbsp; Faint dashes — your listed order
-            ${cands.length?"&nbsp;·&nbsp; Hollow pins — options":""}</span>
+          <span>${useStreet
+            ? "Numbered pins in visiting order &nbsp;·&nbsp; hollow circles are options"
+            : `Solid — suggested order &nbsp;·&nbsp; Faint dashes — your listed order${
+                cands.length?" &nbsp;·&nbsp; Hollow pins — options":""}`}</span>
           <span>${plan.rows.length} stops${cands.length?" + "+cands.length+" options":""}</span>
         </div>
+        ${TILES_DEAD?`<div class="mapnote">Street tiles unreachable here — showing the diagram,
+          which needs no network. The street map works when this page is served over the web.</div>`:""}
       </div>
       <div class="card" style="margin-top:1rem;">
         <div class="card-h"><h3>The math</h3><span class="eyebrow">Why this order</span></div>
@@ -1361,7 +1477,17 @@ function renderRoute(){
       </div></div>`:""}
   </div>`;
 
-  if(day.variants) $$("#routebody .vbtn").forEach(b=>b.onclick=()=>{
+  if(useStreet){
+    const el=$("#leafmap");
+    if(el){ try{ buildLeaflet(el, seq, cands, plan); }catch(e){ failTiles(); } }
+  }
+
+  $$("#routebody .mapmode .vbtn").forEach(b=>b.onclick=()=>{
+    mapMode=b.dataset.m;
+    try{ localStorage.setItem("iberia.map",mapMode); }catch(e){}
+    renderRoute();
+  });
+  if(day.variants) $$("#routebody .vbtn[data-v]").forEach(b=>b.onclick=()=>{
     routeState.variant=b.dataset.v; renderRoute();
   });
 
@@ -1556,6 +1682,7 @@ function selectTab(name){
     btn.setAttribute("aria-selected",on?"true":"false");
     pan.hidden = !on;
   });
+  if(name!=="routes") destroyMap();
   if(name==="routes" && !routeState.date){
     routeState.date = routableDays()[0].date;
     renderDayPick(); renderRoute();
@@ -1571,6 +1698,7 @@ $("#themetog").onclick=()=>{
   else document.documentElement.removeAttribute("data-theme");
   $("#themetog").textContent = next? next : "Theme";
   try{ localStorage.setItem("iberia.theme",next); }catch(e){}
+  retintMap();
 };
 
 $("#schq").addEventListener("input",e=>{ schedQuery=e.target.value; renderSchedule(); });
